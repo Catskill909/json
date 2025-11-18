@@ -1,0 +1,311 @@
+import React, { useState, useMemo } from "react";
+import { ThemeProvider, CssBaseline } from "@mui/material";
+import { themes } from "./themes";
+import Layout from "./components/Layout";
+import ControlsBar from "./components/ControlsBar";
+import schemaValidatorPlugin from "./plugins/schemaValidator";
+
+// Placeholder panes for now
+const RawInputPane = (props: { value: string; onChange: (v: string) => void; error?: boolean }) => (
+  <div style={{ flex: 1, minHeight: 0, display: "flex" }}>
+    <textarea
+      style={{
+        width: "100%",
+        height: "100%",
+        minHeight: 0,
+        flex: 1,
+        background: props.error ? "#2d1a1a" : "#181818",
+        color: "#e0e0e0",
+        border: props.error ? "2px solid #ef5350" : "none",
+        resize: "none",
+        fontFamily: "monospace",
+        fontSize: 16,
+        outline: props.error ? "2px solid #ef5350" : "none",
+        transition: "border 0.2s, outline 0.2s, background 0.2s",
+        overflow: "auto",
+        boxSizing: "border-box"
+      }}
+      placeholder="Paste or enter JSON here..."
+      value={props.value}
+      onChange={e => props.onChange(e.target.value)}
+      spellCheck={false}
+      autoComplete="off"
+      autoCorrect="off"
+      autoCapitalize="off"
+      aria-invalid={props.error}
+    />
+  </div>
+);
+
+const FormattedOutputPane = (props: { value: string }) => (
+  <div style={{ flex: 1, minHeight: 0, display: "flex" }}>
+    <pre
+      style={{
+        width: "100%",
+        height: "100%",
+        minHeight: 0,
+        flex: 1,
+        background: "#181818",
+        color: "#90caf9",
+        margin: 0,
+        fontFamily: "monospace",
+        fontSize: 16,
+        overflow: "auto",
+        boxSizing: "border-box"
+      }}
+    >
+      {props.value}
+    </pre>
+  </div>
+);
+
+
+function App() {
+  // State for input, URL, output, theme, and validation
+  const [inputValue, setInputValue] = useState("");
+  const [urlValue, setUrlValue] = useState("");
+  const [formatted, setFormatted] = useState("");
+  const [messages, setMessages] = useState<React.ReactNode>(null);
+  const [themeId, setThemeId] = useState(themes[0].id);
+  const [validation, setValidation] = useState<{ valid: boolean; errors?: string[] } | null>(null);
+  const [useProxy, setUseProxy] = useState(true); // Toggle for proxy
+  const [headers, setHeaders] = useState<{ key: string; value: string }[]>([]);
+  const [newHeader, setNewHeader] = useState<{ key: string; value: string }>({ key: '', value: '' });
+
+  // Register plugins (static for now)
+  const validators = useMemo(() => {
+    const plugin = schemaValidatorPlugin;
+    let validator: any = null;
+    plugin.register({
+      addValidator: (v: any) => {
+        validator = v;
+      },
+    });
+    return validator ? [validator] : [];
+  }, []);
+
+  // Validate JSON using plugins
+  const validateJson = (json: any) => {
+    let result = { valid: true, errors: [] as string[] };
+    for (const v of validators) {
+      const r = v.validate(json);
+      if (!r.valid) {
+        result.valid = false;
+        if (r.errors) result.errors.push(...r.errors);
+      }
+    }
+    return result;
+  };
+
+  // Handlers for ControlsBar
+  const handleInputChange = (v: string) => {
+    setInputValue(v);
+    try {
+      const parsed = JSON.parse(v);
+      setFormatted(JSON.stringify(parsed, null, 2));
+      const val = validateJson(parsed);
+      setValidation(val);
+      if (!val.valid) {
+        setMessages(
+          <span style={{ color: "#ef5350" }}>
+            {val.errors?.join(", ") || "Validation failed"}
+          </span>
+        );
+      } else {
+        setMessages(null);
+      }
+    } catch (e: any) {
+      setFormatted("");
+      setValidation(null);
+      setMessages(
+        <span style={{ color: "#ef5350" }}>
+          {e.message || "Invalid JSON"}
+        </span>
+      );
+    }
+  };
+
+  const handleUrlChange = (v: string) => setUrlValue(v);
+
+  const handleFetchUrl = async () => {
+    try {
+      setMessages(<span style={{ color: "#29b6f6" }}>Fetching...</span>);
+      let fetchUrl = urlValue;
+      if (useProxy && !/^https?:\/\/localhost[:/]/.test(urlValue)) {
+        fetchUrl = `http://localhost:8010/proxy/${urlValue}`;
+      }
+      // Build headers
+      const fetchHeaders: Record<string, string> = {};
+      headers.forEach(h => {
+        if (h.key && h.value) fetchHeaders[h.key] = h.value;
+      });
+      const res = await fetch(fetchUrl, {
+        headers: fetchHeaders,
+      });
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
+      const contentType = res.headers.get("content-type") || "";
+      if (!contentType.includes("application/json")) {
+        throw new Error("URL did not return JSON (content-type: " + contentType + ")");
+      }
+      const text = await res.text();
+      setInputValue(text);
+      try {
+        const parsed = JSON.parse(text);
+        setFormatted(JSON.stringify(parsed, null, 2));
+        const val = validateJson(parsed);
+        setValidation(val);
+        if (!val.valid) {
+          setMessages(
+            <span style={{ color: "#ef5350" }}>
+              {val.errors?.join(", ") || "Validation failed"}
+            </span>
+          );
+        } else {
+          setMessages(null);
+        }
+      } catch (e: any) {
+        setFormatted("");
+        setValidation(null);
+        setMessages(
+          <span style={{ color: "#ef5350" }}>
+            Invalid JSON from URL: {e.message || "Parse error"}
+          </span>
+        );
+      }
+    } catch (e: any) {
+      let isCors = false;
+      if (e instanceof TypeError && e.message && e.message.match(/(cors|cross[- ]origin|network)/i)) {
+        isCors = true;
+      }
+      setMessages(
+        <span style={{ color: "#ef5350" }}>
+          {e.message || "Failed to fetch JSON"}
+          {isCors && (
+            <>
+              <br />
+              <span style={{ color: "#ffa726" }}>
+                This may be a CORS error. Try running a local proxy server to bypass CORS restrictions.<br />
+                Example: <code>npx local-cors-proxy</code> or use a browser extension.<br />
+                <a href="https://github.com/garmeeh/local-cors-proxy" target="_blank" rel="noopener noreferrer" style={{ color: "#90caf9" }}>Learn more</a>
+              </span>
+            </>
+          )}
+        </span>
+      );
+      setFormatted("");
+      setValidation(null);
+    }
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(formatted);
+    setMessages(<span style={{ color: "#66bb6a" }}>Copied!</span>);
+  };
+
+  const handleDownload = () => {
+    const blob = new Blob([formatted], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "formatted.json";
+    a.click();
+    URL.revokeObjectURL(url);
+    setMessages(<span style={{ color: "#66bb6a" }}>Downloaded!</span>);
+  };
+
+  // Theme switching
+  const handleThemeToggle = () => {
+    const idx = themes.findIndex(t => t.id === themeId);
+    const next = (idx + 1) % themes.length;
+    setThemeId(themes[next].id);
+    setMessages(<span style={{ color: "#ffa726" }}>Theme switched to {themes[next].name}</span>);
+  };
+
+  const currentTheme = useMemo(() => {
+    return themes.find(t => t.id === themeId)?.themeObject || themes[0].themeObject;
+  }, [themeId]);
+
+  return (
+    <ThemeProvider theme={currentTheme}>
+      <CssBaseline />
+      <div style={{ width: "100vw", height: "100vh", minHeight: 0, minWidth: 0, overflow: "hidden" }}>
+        <div style={{ padding: 8, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 14 }}>
+            <input
+              type="checkbox"
+              checked={useProxy}
+              onChange={e => setUseProxy(e.target.checked)}
+              style={{ marginRight: 4 }}
+            />
+            Use local CORS proxy (http://localhost:8010/proxy/)
+          </label>
+          <form
+            style={{ display: 'flex', alignItems: 'center', gap: 4 }}
+            onSubmit={e => {
+              e.preventDefault();
+              if (newHeader.key && newHeader.value) {
+                setHeaders([...headers, newHeader]);
+                setNewHeader({ key: '', value: '' });
+              }
+            }}
+          >
+            <input
+              type="text"
+              placeholder="Header key"
+              value={newHeader.key}
+              onChange={e => setNewHeader(h => ({ ...h, key: e.target.value }))}
+              style={{ fontSize: 14, padding: 2, width: 100 }}
+            />
+            <input
+              type="text"
+              placeholder="Header value"
+              value={newHeader.value}
+              onChange={e => setNewHeader(h => ({ ...h, value: e.target.value }))}
+              style={{ fontSize: 14, padding: 2, width: 160 }}
+            />
+            <button type="submit" style={{ fontSize: 14, padding: '2px 8px' }}>Add Header</button>
+          </form>
+          {headers.length > 0 && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexWrap: 'wrap' }}>
+              {headers.map((h, i) => (
+                <span key={i} style={{ background: '#222', color: '#90caf9', borderRadius: 4, padding: '2px 6px', marginRight: 2, fontSize: 13 }}>
+                  {h.key}: {h.value}
+                  <button
+                    onClick={() => setHeaders(headers.filter((_, idx) => idx !== i))}
+                    style={{ marginLeft: 4, color: '#ef5350', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13 }}
+                    title="Remove header"
+                  >×</button>
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+        <Layout
+          controls={
+            <ControlsBar
+              inputValue={inputValue}
+              urlValue={urlValue}
+              onInputChange={handleInputChange}
+              onUrlChange={handleUrlChange}
+              onFetchUrl={handleFetchUrl}
+              onCopy={handleCopy}
+              onDownload={handleDownload}
+              onThemeToggle={handleThemeToggle}
+            />
+          }
+          messages={messages}
+          leftPane={
+            <RawInputPane value={inputValue} onChange={handleInputChange} error={!!messages && validation?.valid === false} />
+          }
+          rightPane={
+            <FormattedOutputPane value={formatted} />
+          }
+        />
+      </div>
+    </ThemeProvider>
+  );
+}
+
+export default App;
