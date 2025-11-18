@@ -2,9 +2,14 @@ import express from 'express';
 import cors from 'cors';
 import axios from 'axios';
 import https from 'https';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = 8010;
+const PORT = process.env.PORT || 8010;
 
 // Create an agent that ignores SSL errors
 const httpsAgent = new https.Agent({  
@@ -13,6 +18,7 @@ const httpsAgent = new https.Agent({
 
 app.use(cors());
 
+// Proxy endpoint
 app.use('/proxy', async (req, res) => {
   try {
     // req.url contains the rest of the path including query string
@@ -57,6 +63,15 @@ app.use('/proxy', async (req, res) => {
   }
 });
 
+// Serve static files from dist
+app.use(express.static(path.join(__dirname, '../dist')));
+
+// SPA Fallback
+app.get('*', (req, res) => {
+  if (req.path.startsWith('/proxy')) return; // Don't intercept proxy
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
+});
+
 app.listen(PORT, () => {
-  console.log(`Proxy server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
