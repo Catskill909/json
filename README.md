@@ -1,12 +1,33 @@
-# JSON Tool
+# JSON Tool Pro
 
-A cutting-edge, extensible JSON formatter and validator for developers, featuring:
+A cutting-edge, professional JSON development environment with local proxy capabilities, modern design, and extensibility.
 
-- Modern Material Design-inspired dark mode interface
-- Side-by-side raw/pretty panes with all controls/messages above
-- Input via direct text or URL fetch
-- Real-time validation, error highlighting, copy/download
-- Modular architecture for plugins, custom themes, schema validation, diffing, collaboration, and more
+![JSON Tool Pro](https://via.placeholder.com/800x400?text=JSON+Tool+Pro+Preview)
+
+## Features
+
+- **Modern Interface**: Material Design with Dark/Light mode, using *Inter* and *JetBrains Mono* fonts. Headers styled with *Oswald*.
+- **Monaco Editor**: Professional-grade editor with syntax highlighting, folding, and minimap.
+- **CORS Proxy**: Built-in Node.js proxy server to bypass CORS restrictions and fetch JSON from any URL.
+- **Utilities**:
+  - **Prettify**: Format compact JSON.
+  - **Minify**: Compress JSON for production.
+  - **Validate**: Real-time error detection.
+  - **Fetch**: Load JSON from external APIs easily.
+- **Extensible**: Plugin architecture for validators and themes.
+
+## Getting Started
+
+1. **Install Dependencies**
+   ```bash
+   npm install
+   ```
+
+2. **Start the App**
+   ```bash
+   npm run dev
+   ```
+   This command runs both the Vite frontend (http://localhost:5173) and the Proxy server (http://localhost:8010) concurrently.
 
 ## Project Structure
 
