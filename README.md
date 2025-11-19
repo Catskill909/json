@@ -14,9 +14,9 @@ A cutting-edge, professional JSON development environment with modern UI, powerf
 - **Multi-Feed Input Support**: Auto-detect JSON, RSS, Atom, and generic XML feeds, converting XML to JSON for editing
 
 ### Advanced Features
+- **Format Conversion Panel**: Convert JSON to YAML, CSV, XML, TypeScript Interfaces, Dart Classes, or minified/pretty JSON with one click. Output appears in a dedicated side pane with copy/download controls
 - **JSON Schema Validation**: Validate against schemas (Draft 7, 2019-09, 2020-12) with detailed error reporting
 - **Customizable Formatting**: Configure indent size (2/4/8 spaces or tabs), quote style, and trailing commas
-- **Format Conversion**: Prettify or minify JSON instantly
 - **Quick Actions**: Copy to clipboard, download as file, clear workspace
 
 ### Modern UI/UX
@@ -50,12 +50,16 @@ A cutting-edge, professional JSON development environment with modern UI, powerf
 
 ```
 src/
-  core/       # Core APIs (plugin, theme, manager)
-  plugins/    # Pluggable features (schema, diff, etc.)
-  themes/     # Theme modules (Material dark, custom)
-  components/ # UI components (panes, controls, etc.)
-  App.tsx     # Main app entry
-  main.tsx    # Vite/React entry
+  core/
+    conversion/  # Format conversion engine (YAML, CSV, XML, TS, Dart)
+    pluginApi.ts # Plugin system API
+    themeApi.ts  # Theme system API
+  plugins/       # Pluggable features (schema validator, etc.)
+  themes/        # Theme modules (Material dark, custom)
+  components/    # UI components (Layout, ControlsBar, modals, etc.)
+  utils/         # Utilities (feed detection, env config, etc.)
+  App.tsx        # Main app entry
+  main.tsx       # Vite/React entry
 ```
 
 ## Deployment (Coolify + Nixpacks)
@@ -109,11 +113,18 @@ The tool supports a modular plugin system:
 
 ### Architecture Notes
 
-The multi-feed detection/conversion pipeline is documented in [`more-type-feeds.md`](more-type-feeds.md), covering auto-sensing heuristics and the XML→JSON bridge built on `fast-xml-parser`.
+- **Multi-feed pipeline**: The detection/conversion system is documented in [`more-type-feeds.md`](more-type-feeds.md), covering auto-sensing heuristics and the XML→JSON bridge built on `fast-xml-parser`.
+- **Format conversion engine**: Located in `src/core/conversion/`, this module provides a registry-driven API for converting JSON to multiple formats (YAML via `js-yaml`, CSV via `@json2csv/plainjs`, XML via `fast-xml-parser`, plus custom TypeScript and Dart code generators with intelligent type inference).
+
+## Roadmap
+
+See [`ROADMAP.md`](ROADMAP.md) for planned features including:
+- **Priority 3**: Diff/Change Comparison Mode (side-by-side JSON comparison)
+- **Future**: JSONPath query mode, auto-fix suggestions, history/bookmarks, browser extensions
 
 ## Contributing
 
-Contributions welcome! Add new plugins in `src/plugins/` or themes in `src/themes/`.
+Contributions welcome! Add new plugins in `src/plugins/`, themes in `src/themes/`, or conversion formats in `src/core/conversion/`.
 
 ## License
 

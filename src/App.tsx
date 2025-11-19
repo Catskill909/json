@@ -1,5 +1,8 @@
 import React, { useState, useMemo } from "react";
-import { ThemeProvider, CssBaseline, Typography, Box } from "@mui/material";
+import { ThemeProvider, CssBaseline, Typography, Box, IconButton } from "@mui/material";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import DownloadIcon from "@mui/icons-material/Download";
+import CloseIcon from "@mui/icons-material/Close";
 import Editor from "@monaco-editor/react";
 import { themes } from "./themes";
 import Layout from "./components/Layout";
@@ -7,15 +10,25 @@ import ControlsBar from "./components/ControlsBar";
 import HelpModal from "./components/HelpModal";
 import FormatSettings, { type FormatOptions } from "./components/FormatSettings";
 import SchemaValidator from "./components/SchemaValidator";
+import ModernTooltip from "./components/ModernTooltip";
 import schemaValidatorPlugin from "./plugins/schemaValidator";
 import { detectFeedType, convertXmlToJson } from "./utils/feed";
 import { getProxyUrl, shouldUseProxy } from "./utils/env";
+import {
+  convertValue,
+  conversionOptions,
+  type ConversionFormat,
+  type ConversionLanguage,
+  type ConversionResult,
+} from "./core/conversion";
 
 function App() {
   // State
   const [inputValue, setInputValue] = useState("");
   const [urlValue, setUrlValue] = useState("");
   const [formatted, setFormatted] = useState("");
+  const [conversionResult, setConversionResult] = useState<ConversionResult | null>(null);
+  const [conversionError, setConversionError] = useState<string | null>(null);
   const [messages, setMessages] = useState<React.ReactNode>(null);
   const [themeId, setThemeId] = useState(themes[0].id);
   const [useProxy, setUseProxy] = useState(true);
@@ -58,6 +71,8 @@ function App() {
   // Shared validation and formatting logic
   const validateAndFormat = (val: string, extraMsg: React.ReactNode = null) => {
     setInputValue(val);
+    setConversionResult(null);
+    setConversionError(null);
     
     try {
       if (!val.trim()) {
@@ -194,20 +209,47 @@ function App() {
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(formatted);
-    setMessages(<span style={{ color: "#66bb6a", fontFamily: "Inter, sans-serif" }}>Copied formatted JSON!</span>);
+    const valueToCopy = conversionResult?.content ?? formatted;
+    if (!valueToCopy) {
+      setMessages(
+        <span style={{ color: "#ef5350", fontFamily: "Inter, sans-serif" }}>
+          Nothing to copy
+        </span>,
+      );
+      return;
+    }
+    navigator.clipboard.writeText(valueToCopy);
+    setMessages(
+      <span style={{ color: "#66bb6a", fontFamily: "Inter, sans-serif" }}>
+        Copied {conversionResult ? conversionResult.label : "formatted JSON"}!
+      </span>,
+    );
     setTimeout(() => setMessages(null), 3000);
   };
 
   const handleDownload = () => {
-    const blob = new Blob([formatted], { type: "application/json" });
+    const contentToDownload = conversionResult?.content ?? formatted;
+    if (!contentToDownload) {
+      setMessages(
+        <span style={{ color: "#ef5350", fontFamily: "Inter, sans-serif" }}>
+          Nothing to download
+        </span>,
+      );
+      return;
+    }
+    const extension = conversionResult?.format?.startsWith("json") ? "json" : conversionResult?.format ?? "json";
+    const blob = new Blob([contentToDownload], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "formatted.json";
+    a.download = `output.${extension}`;
     a.click();
     URL.revokeObjectURL(url);
-    setMessages(<span style={{ color: "#66bb6a", fontFamily: "Inter, sans-serif" }}>Downloaded!</span>);
+    setMessages(
+      <span style={{ color: "#66bb6a", fontFamily: "Inter, sans-serif" }}>
+        Downloaded {conversionResult ? conversionResult.label : "JSON"}!
+      </span>,
+    );
   };
 
   const handleFormat = (mode: 'pretty' | 'minified') => {
@@ -242,6 +284,8 @@ function App() {
   const handleClear = () => {
     setInputValue("");
     setFormatted("");
+    setConversionResult(null);
+    setConversionError(null);
     setUrlValue("");
     setMessages(null);
   };
@@ -268,6 +312,28 @@ function App() {
   }, [themeId]);
 
   const isDark = themes.find(t => t.id === themeId)?.isDark;
+
+  const handleConvert = (format: ConversionFormat) => {
+    if (!inputValue.trim()) {
+      setConversionError("Enter JSON before converting");
+      setConversionResult(null);
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(inputValue);
+      const result = convertValue(parsed, format);
+      setConversionResult(result);
+      setConversionError(null);
+    } catch (error: any) {
+      setConversionError(error.message || "Conversion failed");
+      setConversionResult(null);
+    }
+  };
+
+  const showConversionPane = Boolean(conversionResult || conversionError);
+  const conversionLanguage: ConversionLanguage = conversionResult?.language ?? "plaintext";
+  const conversionContent = conversionResult?.content ?? conversionError ?? "";
 
   return (
     <ThemeProvider theme={currentTheme}>
@@ -318,6 +384,8 @@ function App() {
               onSchema={() => setSchemaOpen(true)}
               onSettings={() => setSettingsOpen(true)}
               onHelp={() => setHelpOpen(true)}
+              onConvert={handleConvert}
+              conversionOptions={conversionOptions}
             />
           }
           messages={
@@ -412,23 +480,89 @@ function App() {
             </Box>
           }
           rightPane={
-            <Editor
-              height="100%"
-              defaultLanguage="json"
-              value={formatted}
-              theme={isDark ? "vs-dark" : "light"}
-              options={{
-                readOnly: true,
-                minimap: { enabled: true },
-                fontSize: 14,
-                fontFamily: "JetBrains Mono, monospace",
-                wordWrap: "wordWrapColumn",
-                automaticLayout: true,
-                scrollBeyondLastLine: false,
-                renderLineHighlight: "none",
-              }}
-            />
+            showConversionPane ? (
+              <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    px: 2,
+                    py: 1,
+                    borderBottom: `1px solid ${isDark ? "#333" : "#e0e0e0"}`,
+                    backgroundColor: isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.02)",
+                  }}
+                >
+                  <div>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                      {conversionResult?.label ?? "Conversion Error"}
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: isDark ? "#ccc" : "#666" }}>
+                      {conversionResult ? conversionResult.language.toUpperCase() : "Error"}
+                    </Typography>
+                  </div>
+                  <Box sx={{ display: "flex", gap: 1 }}>
+                    <ModernTooltip title="Copy output" arrow placement="bottom">
+                      <IconButton size="small" onClick={handleCopy}>
+                        <ContentCopyIcon fontSize="small" />
+                      </IconButton>
+                    </ModernTooltip>
+                    <ModernTooltip title="Download output" arrow placement="bottom">
+                      <IconButton size="small" onClick={handleDownload}>
+                        <DownloadIcon fontSize="small" />
+                      </IconButton>
+                    </ModernTooltip>
+                    <ModernTooltip title="Close conversion pane" arrow placement="bottom">
+                      <IconButton
+                        size="small"
+                        onClick={() => {
+                          setConversionResult(null);
+                          setConversionError(null);
+                        }}
+                      >
+                        <CloseIcon fontSize="small" />
+                      </IconButton>
+                    </ModernTooltip>
+                  </Box>
+                </Box>
+                <Editor
+                  height="100%"
+                  defaultLanguage={conversionLanguage}
+                  value={conversionContent}
+                  theme={isDark ? "vs-dark" : "light"}
+                  options={{
+                    readOnly: true,
+                    minimap: { enabled: true },
+                    fontSize: 14,
+                    fontFamily: "JetBrains Mono, monospace",
+                    wordWrap: "wordWrapColumn",
+                    automaticLayout: true,
+                    scrollBeyondLastLine: false,
+                    renderLineHighlight: "none",
+                  }}
+                />
+              </Box>
+            ) : (
+              <Editor
+                height="100%"
+                defaultLanguage="json"
+                value={formatted}
+                theme={isDark ? "vs-dark" : "light"}
+                options={{
+                  readOnly: true,
+                  minimap: { enabled: true },
+                  fontSize: 14,
+                  fontFamily: "JetBrains Mono, monospace",
+                  wordWrap: "wordWrapColumn",
+                  automaticLayout: true,
+                  scrollBeyondLastLine: false,
+                  renderLineHighlight: "none",
+                }}
+              />
+            )
           }
+          rightPaneVisible
+          rightPaneAriaLabel={showConversionPane ? "Conversion Output Pane" : "Formatted JSON Output Pane"}
         />
 
         <HelpModal open={helpOpen} onClose={() => setHelpOpen(false)} />

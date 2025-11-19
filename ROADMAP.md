@@ -104,6 +104,27 @@ These "wow" features will make JSON Tool Pro stand out from competitors.
 
 **Value:** Ties into your Flutter/TypeScript workflow. Analysts love JSON→CSV.
 
+#### Feature Spec 1 — Format Conversion Panel (JSON ⇄ Everything)
+- **Milestone:** v1.1
+- **Status:** Ready for implementation
+- **Impact:** ★★★★★
+
+**Overview:** A dedicated Format button in the ControlsBar opens a dropdown (JSON pretty/minified, YAML, CSV, XML, TypeScript, Dart). Selecting an option renders the converted output in a non-destructive right-side pane that includes copy, download, and close controls. Main editor content remains untouched.
+
+**Supported conversions (v1.1):** JSON→YAML/CSV/XML/TS Interfaces/Dart Classes/Minified/Pretty.  
+**Planned (v1.2):** Markdown tables, query params, YAML→JSON, round-trip JSON↔XML (pretty).
+
+**Architecture:** New `src/core/conversion` module housing jsonToYaml/jsonToCsv/jsonToXml/jsonToTs/jsonToDart helpers plus shared registry/convertValue API. Recommended libs: `js-yaml`, `json2csv`, `fast-xml-parser`.
+
+**UX specifics:**
+1. ControlsBar dropdown labeled **Format** preceding existing actions.
+2. Choosing a format opens/stacks a right-side Monaco pane showing output (syntax highlighting keyed off format) with Copy, Download, Close icons.
+3. Pane should display friendly errors (invalid JSON, empty documents) and fall back to formatted JSON view when closed.
+
+**Error/edge cases:** Validate JSON before conversion, handle empty docs, show conversion failure messaging inline. Future enhancement: smart suggestions (e.g., arrays→CSV recommendation).
+
+**Next Feature:** After shipping this panel, request "Give me the Diff Mode spec." to scope Priority 3 work.
+
 ---
 
 ### 🎯 Priority 3: Diff / Change Comparison Mode

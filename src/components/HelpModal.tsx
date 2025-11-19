@@ -8,6 +8,8 @@ import SecurityIcon from "@mui/icons-material/Security";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import SettingsIcon from "@mui/icons-material/Settings";
 import VerifiedIcon from "@mui/icons-material/Verified";
+import TransformIcon from "@mui/icons-material/Transform";
+import RssFeedIcon from "@mui/icons-material/RssFeed";
 
 interface HelpModalProps {
   open: boolean;
@@ -73,6 +75,15 @@ const HelpModal: React.FC<HelpModalProps> = ({ open, onClose }) => {
                         />
                     </ListItem>
                     <ListItem>
+                        <ListItemIcon><RssFeedIcon sx={{ color: "#ff9800" }} /></ListItemIcon>
+                        <ListItemText 
+                            primary="XML/RSS/Atom Support" 
+                            secondary="Auto-detects and converts XML, RSS, and Atom feeds to JSON on-the-fly when fetching from URLs."
+                            primaryTypographyProps={{ fontWeight: 600 }}
+                            secondaryTypographyProps={{ color: "#9e9e9e" }}
+                        />
+                    </ListItem>
+                    <ListItem>
                         <ListItemIcon><DeleteOutlineIcon sx={{ color: "#ef5350" }} /></ListItemIcon>
                         <ListItemText 
                             primary="Format & Utilities" 
@@ -90,10 +101,19 @@ const HelpModal: React.FC<HelpModalProps> = ({ open, onClose }) => {
                 </Typography>
                 <List dense>
                     <ListItem>
+                        <ListItemIcon><TransformIcon sx={{ color: "#e91e63" }} /></ListItemIcon>
+                        <ListItemText 
+                            primary="Format Conversion Panel" 
+                            secondary="Click 'Format' dropdown to convert JSON to YAML, CSV, XML, TypeScript Interfaces, Dart Classes, or minified/pretty JSON. Output appears in a side pane with copy/download controls."
+                            primaryTypographyProps={{ fontWeight: 600 }}
+                            secondaryTypographyProps={{ color: "#9e9e9e" }}
+                        />
+                    </ListItem>
+                    <ListItem>
                         <ListItemIcon><VerifiedIcon sx={{ color: "#4caf50" }} /></ListItemIcon>
                         <ListItemText 
                             primary="JSON Schema Validation" 
-                            secondary="Validate JSON against schemas (Draft 7/2019-09/2020-12). Expand the accordion below the editor to use this powerful feature."
+                            secondary="Validate JSON against schemas (Draft 7/2019-09/2020-12). Click the ✓ Schema button to open the validator."
                             primaryTypographyProps={{ fontWeight: 600 }}
                             secondaryTypographyProps={{ color: "#9e9e9e" }}
                         />
@@ -131,7 +151,7 @@ const HelpModal: React.FC<HelpModalProps> = ({ open, onClose }) => {
         
         <Divider sx={{ my: 2, borderColor: "#333" }} />
         <Typography variant="caption" sx={{ color: "#666", display: "block", textAlign: "center" }}>
-            SuperSoul JSON Tool v2.0.0 &bull; Phase 2: Schema Validation Complete &bull; Built for Developers
+            SuperSoul JSON Tool v2.1.0 &bull; Format Conversion Panel Live &bull; Built for Developers
         </Typography>
 
       </DialogContent>
