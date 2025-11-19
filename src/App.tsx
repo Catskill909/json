@@ -8,6 +8,7 @@ import HelpModal from "./components/HelpModal";
 import FormatSettings, { type FormatOptions } from "./components/FormatSettings";
 import SchemaValidator from "./components/SchemaValidator";
 import schemaValidatorPlugin from "./plugins/schemaValidator";
+import { getProxyUrl, shouldUseProxy } from "./utils/env";
 
 function App() {
   // State
@@ -120,9 +121,10 @@ function App() {
       setMessages(<span style={{ color: "#29b6f6", fontFamily: "Inter, sans-serif" }}>Fetching...</span>);
       let fetchUrl = urlValue;
       
-      // Use local proxy if enabled and not fetching localhost
-      if (useProxy && !urlValue.includes("localhost")) {
-         fetchUrl = `http://localhost:8010/proxy/${urlValue}`;
+      // Use proxy if enabled and URL should be proxied
+      if (useProxy && shouldUseProxy(urlValue)) {
+         // Environment-aware proxy URL (works in dev and production)
+         fetchUrl = getProxyUrl(urlValue);
       }
 
       const res = await fetch(fetchUrl);

@@ -57,6 +57,8 @@ src/
 
 ## Deployment (Coolify + Nixpacks)
 
+⚠️ **CRITICAL**: Before deploying, read [`DEPLOYMENT.md`](DEPLOYMENT.md) for the complete checklist and common pitfalls.
+
 1. **Push to `main`** – Coolify pulls directly from `Catskill909/json:main`. All deployment logic lives in [`nixpacks.toml`](nixpacks.toml).
 2. **Coolify settings**
    - Build pack: **Nixpacks**
@@ -79,11 +81,21 @@ src/
    This enforces Node 23 (required by Vite 7) and ensures Linux-specific optional dependencies such as `@rollup/rollup-linux-x64-gnu` are rebuilt inside the container.
 4. **Runtime** – `npm start` launches the Express proxy/server (serves `/dist` + `/proxy`).
 
+### Pre-Deployment Testing
+
+**ALWAYS test production build locally before deploying:**
+```bash
+npm run build
+npm start
+# Visit http://localhost:8010 and test proxy functionality
+```
+
 ### Troubleshooting notes from production rollout
 
 1. **Rollup optional dependency missing** – occurs when the Linux build reuses a macOS `node_modules`. The clean `find … rm` plus `npm install --force` fixes it.
 2. **Docker cache mount conflict** – Coolify mounts `/app/node_modules/.cache`. Removing the parent dir fails; instead we delete each child except `.cache` (current config already handles this).
 3. **Express 5 wildcard routes** – Express 5 rejects `app.get('*')`/`app.get('/*')`. Use `app.use(express.static(...))` plus a final `app.use((req,res)=>res.sendFile(...))` middleware (see [`server/index.js`](server/index.js)). This resolved the `path-to-regexp` errors and the “no available server” health check failures.
+4. **Hardcoded localhost URLs (Nov 18, 2025)** – Frontend was hardcoded to `http://localhost:8010/proxy/` which failed in production. **Solution**: Use environment-aware utilities in `src/utils/env.ts`. Never hardcode localhost URLs in frontend code - always use relative paths or environment detection. See [`DEPLOYMENT.md`](DEPLOYMENT.md) for details.
 
 ## Extensibility
 
