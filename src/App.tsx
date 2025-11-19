@@ -21,6 +21,7 @@ import {
   type ConversionLanguage,
   type ConversionResult,
 } from "./core/conversion";
+import jsonLogo from "./assets/json-logo.png";
 
 function App() {
   // State
@@ -354,9 +355,25 @@ function App() {
             alignItems: "center",
             gap: 16
         }}>
-            <Typography variant="h6" style={{ fontWeight: 600, letterSpacing: -0.5, color: isDark ? "#fff" : "#333" }}>
-                SuperSoul JSON Tool
-            </Typography>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <img
+                    src={jsonLogo}
+                    alt="SuperSoul JSON Tool logo"
+                    style={{ height: 36, width: "auto", display: "block" }}
+                />
+                <Typography
+                    variant="h6"
+                    style={{
+                        fontWeight: 600,
+                        letterSpacing: -0.5,
+                        color: isDark ? "#fff" : "#333",
+                        lineHeight: 1,
+                        transform: "translateY(-2px)",
+                    }}
+                >
+                    SuperSoul JSON Tool
+                </Typography>
+            </div>
             <div style={{ flex: 1 }}>
                  <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: isDark ? "#aaa" : "#666", cursor: "pointer" }}>
                     <input
