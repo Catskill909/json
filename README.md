@@ -11,6 +11,7 @@ A cutting-edge, professional JSON development environment with modern UI, powerf
 - **Enhanced Error Messages**: Precise validation with line and column numbers
 - **Drag & Drop Upload**: Seamless file upload - drag JSON files directly into the editor
 - **CORS Proxy**: Built-in proxy server to fetch JSON from any URL without CORS issues
+- **Multi-Feed Input Support**: Auto-detect JSON, RSS, Atom, and generic XML feeds, converting XML to JSON for editing
 
 ### Advanced Features
 - **JSON Schema Validation**: Validate against schemas (Draft 7, 2019-09, 2020-12) with detailed error reporting
@@ -42,6 +43,8 @@ A cutting-edge, professional JSON development environment with modern UI, powerf
    npm run dev
    ```
    This command runs both the Vite frontend (http://localhost:5173) and the Proxy server (http://localhost:8010) concurrently.
+   
+   **Tip:** Use the "Load URL" control with feeds like `https://archive.wjffradio.org/getrss.php?id=oldskoolsessio` to see auto-detected RSS/Atom/XML converted directly into JSON inside the editor. The status bar calls out when a feed has been converted.
 
 ## Project Structure
 
@@ -103,6 +106,10 @@ The tool supports a modular plugin system:
 - **Plugins:** Add validators, panes, or controls via the plugin API
 - **Themes:** Create custom themes using the theme API
 - See `src/core/pluginApi.ts` and `src/core/themeApi.ts` for extension interfaces
+
+### Architecture Notes
+
+The multi-feed detection/conversion pipeline is documented in [`more-type-feeds.md`](more-type-feeds.md), covering auto-sensing heuristics and the XML→JSON bridge built on `fast-xml-parser`.
 
 ## Contributing
 

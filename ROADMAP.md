@@ -24,9 +24,9 @@ These features are expected by developers and will improve usability and complet
 **Value:** Helps debugging quickly.
 
 ### ✅ 4. Import / Export / Upload File Support
-**Status:** Partially implemented (URL fetch via proxy)  
-**Next:** Add drag & drop file upload, local file picker.  
-**Value:** Very handy for dev workflows.
+**Status:** Implemented (URL fetch via proxy + drag & drop + multi-feed ingestion)  
+**Next:** Extend to allow saving back to original format (e.g., XML) when editing converted feeds.  
+**Value:** Very handy for dev workflows and podcast/news feed exploration.
 
 ### ✅ 5. Copy to Clipboard / Download
 **Status:** Implemented  
@@ -43,9 +43,15 @@ These features are expected by developers and will improve usability and complet
 **Next:** Add privacy badge/notice in UI.
 
 ### 🔄 8. URL / Shareable Link Support
-**Status:** Partially implemented (can fetch from URL)  
+**Status:** Partially implemented (can fetch from URL with auto-detected JSON/RSS/Atom/XML conversion)  
 **Next:** Allow sharing formatted view using query parameters (e.g., `?url=...` or `?json=...`).  
-**Value:** Useful for collaborating or referencing API responses.
+**Value:** Useful for collaborating or referencing API responses and syndicated feeds.
+
+### ✅ 10. Multi-Feed Detection & Conversion
+**Status:** Implemented  
+**Description:** Auto-detect JSON vs RSS/Atom/generic XML feeds (using `fast-xml-parser`) during URL fetch, convert XML payloads into JSON, and surface conversion status in the UI.  
+**Next:** Preserve original XML alongside converted JSON, allow reconversion back to XML, add feed-specific helpers (podcast metadata, enclosure previews).  
+**Value:** Opens the tool to non-JSON feeds without requiring users to know the format up front.
 
 ### 🔄 9. Large File / Performance Handling
 **Status:** Monaco Editor handles reasonably large files  
@@ -80,11 +86,11 @@ These "wow" features will make JSON Tool Pro stand out from competitors.
 ---
 
 ### 🎯 Priority 2: Conversion Between Formats
-**Status:** Not implemented  
+**Status:** Partially implemented (XML/RSS/Atom → JSON auto-conversion)  
 **Description:**
 - JSON → CSV (flatten objects/arrays)
 - JSON → YAML
-- JSON → XML
+- JSON → XML (including round-tripping from converted feeds)
 - JSON → TypeScript interfaces
 - JSON → Dart classes
 - Reverse conversions where applicable
@@ -93,6 +99,7 @@ These "wow" features will make JSON Tool Pro stand out from competitors.
 - Add "Convert" dropdown in ControlsBar
 - Use libraries: `json2csv`, `js-yaml`, `xml-js`
 - For code generation: custom templates for TS/Dart
+- Extend current feed pipeline so users can export converted JSON back to the original XML/RSS form
 - Show conversion result in output pane
 
 **Value:** Ties into your Flutter/TypeScript workflow. Analysts love JSON→CSV.
@@ -341,6 +348,7 @@ These "wow" features will make JSON Tool Pro stand out from competitors.
 - ✅ Auto-validation with debounce
 - ✅ Sample schemas for quick testing
 - ✅ Detailed error reporting with paths
+- ✅ Multi-feed detection + XML/RSS/Atom → JSON ingestion
 
 **Next Up (Phase 2 Remaining):**
 - 🎯 Format conversion (CSV, YAML, TS, Dart)
