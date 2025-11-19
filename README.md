@@ -31,6 +31,27 @@ A cutting-edge, professional JSON development environment with modern UI, powerf
 - **No Data Storage**: Your data never leaves your machine
 - **Fast & Lightweight**: Optimized for performance
 
+## Format Conversion Panel
+
+The Format button in the ControlsBar unlocks a full multi-format export workflow without overwriting the editor contents.
+
+| Conversion | Output Language | Notes |
+|------------|----------------|-------|
+| JSON (pretty/minified) | JSON | Quickly switch between human-readable and compact JSON |
+| YAML | YAML | Uses `js-yaml` with 2-space indentation |
+| CSV (flattened) | CSV | Powered by `@json2csv/plainjs` with deep flattening of nested objects/arrays |
+| XML | XML | Built on `fast-xml-parser` with pretty indentation |
+| TypeScript Interfaces | TypeScript | Custom generator that infers interfaces, arrays, primitives, and reuse of identical shapes |
+| Dart Classes | Dart | Generates classes with `fromJson()` and `toJson()` helpers for Flutter apps |
+
+**How it works**
+1. Click **Format ▾** in the ControlsBar (next to the fetch button).
+2. Choose the target format. The output appears in the right-side Conversion pane while leaving the main editor untouched.
+3. Use the pane controls to **Copy**, **Download**, or **Close** the conversion result.
+4. Switching back to editing automatically clears the conversion panel when the source JSON changes.
+
+> Tip: Conversion output respects the theme you select (light/dark) and inherits Monaco editor shortcuts.
+
 ## Getting Started
 
 1. **Install Dependencies**

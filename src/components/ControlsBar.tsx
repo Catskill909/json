@@ -121,13 +121,21 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
             <ModernTooltip title="Convert current JSON" arrow placement="bottom">
                 <Button
                     variant="contained"
-                    color="secondary"
                     endIcon={<KeyboardArrowDownIcon />}
                     onClick={handleMenuOpen}
                     sx={{
                         textTransform: 'none',
                         fontWeight: 600,
-                        fontFamily: 'Inter, sans-serif'
+                        fontFamily: 'Inter, sans-serif',
+                        backgroundColor: '#2c2c2c',
+                        color: '#f5f5f5',
+                        border: '1px solid rgba(255, 255, 255, 0.12)',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)',
+                        '&:hover': {
+                            backgroundColor: '#3a3a3a',
+                            borderColor: 'rgba(255, 255, 255, 0.18)',
+                            boxShadow: '0 6px 18px rgba(0, 0, 0, 0.35)'
+                        }
                     }}
                 >
                     Format

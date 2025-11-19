@@ -86,7 +86,7 @@ These "wow" features will make JSON Tool Pro stand out from competitors.
 ---
 
 ### 🎯 Priority 2: Conversion Between Formats
-**Status:** Partially implemented (XML/RSS/Atom → JSON auto-conversion)  
+**Status:** ✅ Format Conversion Panel shipped in v2.1.0 (JSON ⇄ Everything)  
 **Description:**
 - JSON → CSV (flatten objects/arrays)
 - JSON → YAML
@@ -96,17 +96,17 @@ These "wow" features will make JSON Tool Pro stand out from competitors.
 - Reverse conversions where applicable
 
 **Implementation Plan:**
-- Add "Convert" dropdown in ControlsBar
-- Use libraries: `json2csv`, `js-yaml`, `xml-js`
-- For code generation: custom templates for TS/Dart
-- Extend current feed pipeline so users can export converted JSON back to the original XML/RSS form
-- Show conversion result in output pane
+- ✅ Add "Format" dropdown in ControlsBar (non-destructive workflow)
+- ✅ Use libraries: `js-yaml`, `@json2csv/plainjs`, `fast-xml-parser`
+- ✅ Custom generators for TypeScript interfaces & Dart classes (type inference + fromJson/toJson)
+- ✅ Conversion output pane with syntax highlighting, copy/download/close controls
+- 🔜 Extend feed pipeline for round-trip JSON↔XML exports & YAML→JSON conversions (v1.2)
 
 **Value:** Ties into your Flutter/TypeScript workflow. Analysts love JSON→CSV.
 
 #### Feature Spec 1 — Format Conversion Panel (JSON ⇄ Everything)
-- **Milestone:** v1.1
-- **Status:** Ready for implementation
+- **Milestone:** v1.1 (shipped as part of v2.1.0 release)
+- **Status:** ✅ Implemented
 - **Impact:** ★★★★★
 
 **Overview:** A dedicated Format button in the ControlsBar opens a dropdown (JSON pretty/minified, YAML, CSV, XML, TypeScript, Dart). Selecting an option renders the converted output in a non-destructive right-side pane that includes copy, download, and close controls. Main editor content remains untouched.
@@ -114,7 +114,7 @@ These "wow" features will make JSON Tool Pro stand out from competitors.
 **Supported conversions (v1.1):** JSON→YAML/CSV/XML/TS Interfaces/Dart Classes/Minified/Pretty.  
 **Planned (v1.2):** Markdown tables, query params, YAML→JSON, round-trip JSON↔XML (pretty).
 
-**Architecture:** New `src/core/conversion` module housing jsonToYaml/jsonToCsv/jsonToXml/jsonToTs/jsonToDart helpers plus shared registry/convertValue API. Recommended libs: `js-yaml`, `json2csv`, `fast-xml-parser`.
+**Architecture:** `src/core/conversion` module housing jsonToYaml/jsonToCsv/jsonToXml/jsonToTs/jsonToDart helpers plus shared registry/convertValue API. Uses `js-yaml`, `@json2csv/plainjs`, and `fast-xml-parser`.
 
 **UX specifics:**
 1. ControlsBar dropdown labeled **Format** preceding existing actions.
