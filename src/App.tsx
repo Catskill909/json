@@ -1,10 +1,11 @@
 import React, { useState, useMemo } from "react";
-import { ThemeProvider, CssBaseline, Typography } from "@mui/material";
+import { ThemeProvider, CssBaseline, Typography, Box } from "@mui/material";
 import Editor from "@monaco-editor/react";
 import { themes } from "./themes";
 import Layout from "./components/Layout";
 import ControlsBar from "./components/ControlsBar";
 import HelpModal from "./components/HelpModal";
+import FileUpload from "./components/FileUpload";
 import schemaValidatorPlugin from "./plugins/schemaValidator";
 
 function App() {
@@ -73,9 +74,30 @@ function App() {
     } catch (e: any) {
       // Do not clear formatted on error to avoid flickering, just show error
       // setFormatted(""); 
+      
+      // Enhanced error message with line/column if available
+      let errorMsg = e.message || "Invalid JSON";
+      
+      // Try to extract line/column from error message
+      // Chrome/V8 format: "Unexpected token } in JSON at position 42"
+      // Firefox format: "JSON.parse: unexpected character at line 2 column 3"
+      const posMatch = errorMsg.match(/at position (\d+)/);
+      const lineColMatch = errorMsg.match(/line (\d+) column (\d+)/);
+      
+      if (posMatch && val) {
+        const pos = parseInt(posMatch[1]);
+        const lines = val.substring(0, pos).split('\n');
+        const line = lines.length;
+        const col = lines[lines.length - 1].length + 1;
+        errorMsg = `${errorMsg.split(' at position')[0]} at line ${line}, column ${col}`;
+      } else if (lineColMatch) {
+        // Firefox already has line/col, keep as is
+        errorMsg = errorMsg;
+      }
+      
       setMessages(
         <span style={{ color: "#ef5350", fontFamily: "Inter, sans-serif" }}>
-          {e.message || "Invalid JSON"}
+          ⚠️ {errorMsg}
         </span>
       );
     }
@@ -170,6 +192,16 @@ function App() {
     setMessages(null);
   };
 
+  const handleFileLoad = (content: string, filename: string) => {
+    setInputValue(content);
+    handleInputChange(content);
+    setMessages(
+      <span style={{ color: "#66bb6a", fontFamily: "Inter, sans-serif" }}>
+        ✓ Loaded {filename}
+      </span>
+    );
+  };
+
   // Theme switching
   const handleThemeToggle = () => {
     const idx = themes.findIndex(t => t.id === themeId);
@@ -238,22 +270,27 @@ function App() {
             </div>
           }
           leftPane={
-            <Editor
-              height="100%"
-              defaultLanguage="json"
-              value={inputValue}
-              onChange={handleInputChange}
-              theme={isDark ? "vs-dark" : "light"}
-              options={{
-                minimap: { enabled: false },
-                fontSize: 14,
-                fontFamily: "JetBrains Mono, monospace",
-                wordWrap: "on",
-                automaticLayout: true,
-                scrollBeyondLastLine: false,
-                renderLineHighlight: "none",
-              }}
-            />
+            <Box sx={{ position: 'relative', width: '100%', height: '100%' }}>
+              {!inputValue && (
+                <FileUpload onFileLoad={handleFileLoad} isDark={isDark} />
+              )}
+              <Editor
+                height="100%"
+                defaultLanguage="json"
+                value={inputValue}
+                onChange={handleInputChange}
+                theme={isDark ? "vs-dark" : "light"}
+                options={{
+                  minimap: { enabled: false },
+                  fontSize: 14,
+                  fontFamily: "JetBrains Mono, monospace",
+                  wordWrap: "on",
+                  automaticLayout: true,
+                  scrollBeyondLastLine: false,
+                  renderLineHighlight: "none",
+                }}
+              />
+            </Box>
           }
           rightPane={
             <Editor
