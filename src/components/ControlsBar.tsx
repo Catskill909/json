@@ -74,10 +74,14 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
                 sx={{
                     color: '#29b6f6',
                     transition: 'all 0.3s ease',
+                    outline: 'none',
                     '&:hover': {
                         color: '#4fc3f7',
                         transform: 'translateY(-2px)',
                         backgroundColor: 'rgba(41, 182, 246, 0.1)'
+                    },
+                    '&:focus': {
+                        outline: 'none'
                     }
                 }}
             >
@@ -91,10 +95,14 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
                 sx={{
                     color: '#66bb6a',
                     transition: 'all 0.3s ease',
+                    outline: 'none',
                     '&:hover': {
                         color: '#81c784',
                         transform: 'translateY(-2px)',
                         backgroundColor: 'rgba(102, 187, 106, 0.1)'
+                    },
+                    '&:focus': {
+                        outline: 'none'
                     }
                 }}
             >
@@ -108,10 +116,14 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
                 sx={{
                     color: '#ffa726',
                     transition: 'all 0.3s ease',
+                    outline: 'none',
                     '&:hover': {
                         color: '#ffb74d',
                         transform: 'translateY(-2px)',
                         backgroundColor: 'rgba(255, 167, 38, 0.1)'
+                    },
+                    '&:focus': {
+                        outline: 'none'
                     }
                 }}
             >
@@ -125,10 +137,14 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
                 sx={{
                     color: '#ab47bc',
                     transition: 'all 0.3s ease',
+                    outline: 'none',
                     '&:hover': {
                         color: '#ba68c8',
                         transform: 'translateY(-2px)',
                         backgroundColor: 'rgba(171, 71, 188, 0.1)'
+                    },
+                    '&:focus': {
+                        outline: 'none'
                     }
                 }}
             >
@@ -142,10 +158,14 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
                 sx={{
                     color: '#42a5f5',
                     transition: 'all 0.3s ease',
+                    outline: 'none',
                     '&:hover': {
                         color: '#64b5f6',
                         transform: 'translateY(-2px)',
                         backgroundColor: 'rgba(66, 165, 245, 0.1)'
+                    },
+                    '&:focus': {
+                        outline: 'none'
                     }
                 }}
             >
@@ -159,10 +179,14 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
                 sx={{
                     color: '#ef5350',
                     transition: 'all 0.3s ease',
+                    outline: 'none',
                     '&:hover': {
                         color: '#e57373',
                         transform: 'translateY(-2px)',
                         backgroundColor: 'rgba(239, 83, 80, 0.1)'
+                    },
+                    '&:focus': {
+                        outline: 'none'
                     }
                 }}
             >
@@ -176,10 +200,14 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
                 sx={{
                     color: '#ffb300',
                     transition: 'all 0.3s ease',
+                    outline: 'none',
                     '&:hover': {
                         color: '#ffc107',
                         transform: 'rotate(20deg) translateY(-2px)',
                         backgroundColor: 'rgba(255, 179, 0, 0.1)'
+                    },
+                    '&:focus': {
+                        outline: 'none'
                     }
                 }}
             >
@@ -193,10 +221,14 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
                 sx={{
                     color: '#4caf50',
                     transition: 'all 0.3s ease',
+                    outline: 'none',
                     '&:hover': {
                         color: '#66bb6a',
                         transform: 'scale(1.1) translateY(-2px)',
                         backgroundColor: 'rgba(76, 175, 80, 0.1)'
+                    },
+                    '&:focus': {
+                        outline: 'none'
                     }
                 }}
             >
@@ -210,10 +242,14 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
                 sx={{
                     color: '#78909c',
                     transition: 'all 0.3s ease',
+                    outline: 'none',
                     '&:hover': {
                         color: '#90a4ae',
                         transform: 'rotate(90deg) translateY(-2px)',
                         backgroundColor: 'rgba(120, 144, 156, 0.1)'
+                    },
+                    '&:focus': {
+                        outline: 'none'
                     }
                 }}
             >
@@ -227,10 +263,14 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
                 sx={{
                     color: '#26c6da',
                     transition: 'all 0.3s ease',
+                    outline: 'none',
                     '&:hover': {
                         color: '#4dd0e1',
                         transform: 'scale(1.1) translateY(-2px)',
                         backgroundColor: 'rgba(38, 198, 218, 0.1)'
+                    },
+                    '&:focus': {
+                        outline: 'none'
                     }
                 }}
             >
