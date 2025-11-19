@@ -70,6 +70,7 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
         <ModernTooltip title="Fetch JSON from URL" arrow placement="bottom">
             <IconButton
                 onClick={onFetchUrl}
+                disableRipple
                 sx={{
                     color: '#29b6f6',
                     transition: 'all 0.3s ease',
@@ -86,6 +87,7 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
         <ModernTooltip title="Format (Pretty)" arrow placement="bottom">
             <IconButton
                 onClick={() => onFormat('pretty')}
+                disableRipple
                 sx={{
                     color: '#66bb6a',
                     transition: 'all 0.3s ease',
@@ -102,6 +104,7 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
         <ModernTooltip title="Minify" arrow placement="bottom">
             <IconButton
                 onClick={() => onFormat('minified')}
+                disableRipple
                 sx={{
                     color: '#ffa726',
                     transition: 'all 0.3s ease',
@@ -118,6 +121,7 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
         <ModernTooltip title="Copy formatted JSON" arrow placement="bottom">
             <IconButton
                 onClick={onCopy}
+                disableRipple
                 sx={{
                     color: '#ab47bc',
                     transition: 'all 0.3s ease',
@@ -134,6 +138,7 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
         <ModernTooltip title="Download formatted JSON" arrow placement="bottom">
             <IconButton
                 onClick={onDownload}
+                disableRipple
                 sx={{
                     color: '#42a5f5',
                     transition: 'all 0.3s ease',
@@ -150,6 +155,7 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
         <ModernTooltip title="Clear All" arrow placement="bottom">
             <IconButton
                 onClick={onClear}
+                disableRipple
                 sx={{
                     color: '#ef5350',
                     transition: 'all 0.3s ease',
@@ -166,6 +172,7 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
         <ModernTooltip title="Toggle dark/light theme" arrow placement="bottom">
             <IconButton
                 onClick={onThemeToggle}
+                disableRipple
                 sx={{
                     color: '#ffb300',
                     transition: 'all 0.3s ease',
@@ -182,6 +189,7 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
         <ModernTooltip title="Schema Validation" arrow placement="bottom">
             <IconButton
                 onClick={onSchema}
+                disableRipple
                 sx={{
                     color: '#4caf50',
                     transition: 'all 0.3s ease',
@@ -198,6 +206,7 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
         <ModernTooltip title="Format Settings" arrow placement="bottom">
             <IconButton
                 onClick={onSettings}
+                disableRipple
                 sx={{
                     color: '#78909c',
                     transition: 'all 0.3s ease',
@@ -214,6 +223,7 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
         <ModernTooltip title="Help & Instructions" arrow placement="bottom">
             <IconButton
                 onClick={onHelp}
+                disableRipple
                 sx={{
                     color: '#26c6da',
                     transition: 'all 0.3s ease',

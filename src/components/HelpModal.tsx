@@ -111,7 +111,7 @@ const HelpModal: React.FC<HelpModalProps> = ({ open, onClose }) => {
                         <ListItemIcon><SecurityIcon sx={{ color: "#ffa726" }} /></ListItemIcon>
                         <ListItemText 
                             primary="Privacy First" 
-                            secondary="All processing happens in your browser. Your data never leaves your machine. CORS proxy runs locally."
+                            secondary="All JSON processing happens client-side in your browser. Your data is never sent to any server or stored anywhere."
                             primaryTypographyProps={{ fontWeight: 600 }}
                             secondaryTypographyProps={{ color: "#9e9e9e" }}
                         />

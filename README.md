@@ -1,25 +1,34 @@
 # SuperSoul JSON Tool
 
-A cutting-edge, professional JSON development environment with local proxy capabilities, modern design, and extensibility.
+A cutting-edge, professional JSON development environment with modern UI, powerful validation, and extensibility.
 
-![SuperSoul JSON Tool](https://via.placeholder.com/800x400?text=SuperSoul+JSON+Tool+Preview)
+**Live Demo:** [https://json.supersoul.top](https://json.supersoul.top)
 
-## Features
+## ✨ Features
 
-- **Modern Interface**: Material Design with Dark/Light mode, using *Inter* and *JetBrains Mono* fonts. Headers styled with *Oswald*.
-- **Monaco Editor**: Professional-grade editor with syntax highlighting, folding, and minimap.
-- **CORS Proxy**: Built-in Node.js proxy server to bypass CORS restrictions and fetch JSON from any URL.
-- **Drag & Drop Upload**: Beautiful file upload interface - drag JSON files directly into the editor or click to browse.
-- **Enhanced Error Messages**: Detailed validation errors with line and column numbers for quick debugging.
-- **Customizable Formatting**: Configure indent size (2/4/8 spaces or tabs), quote style (single/double), and trailing commas.
-- **JSON Schema Validation**: Validate JSON against schemas (Draft 7, 2019-09, 2020-12) with detailed error reporting. Load sample schemas or paste your own.
-- **Utilities**:
-  - **Prettify**: Format compact JSON with custom settings.
-  - **Minify**: Compress JSON for production.
-  - **Validate**: Real-time error detection with precise error locations.
-  - **Fetch**: Load JSON from external APIs easily.
-  - **Copy/Download**: One-click copy to clipboard or download as file.
-- **Extensible**: Plugin architecture for validators and themes.
+### Core Functionality
+- **Monaco Editor**: Professional-grade editor with syntax highlighting and IntelliSense
+- **Enhanced Error Messages**: Precise validation with line and column numbers
+- **Drag & Drop Upload**: Seamless file upload - drag JSON files directly into the editor
+- **CORS Proxy**: Built-in proxy server to fetch JSON from any URL without CORS issues
+
+### Advanced Features
+- **JSON Schema Validation**: Validate against schemas (Draft 7, 2019-09, 2020-12) with detailed error reporting
+- **Customizable Formatting**: Configure indent size (2/4/8 spaces or tabs), quote style, and trailing commas
+- **Format Conversion**: Prettify or minify JSON instantly
+- **Quick Actions**: Copy to clipboard, download as file, clear workspace
+
+### Modern UI/UX
+- **Font Awesome Icons**: Clean, modern icon set with smooth animations
+- **Glassmorphism Tooltips**: Beautiful dark tooltips with blur effects
+- **Smooth Hover Effects**: Icons slide, rotate, and scale on hover
+- **Dark/Light Themes**: Toggle between themes with smooth transitions
+- **Responsive Design**: Adapts to any screen size
+
+### Privacy & Performance
+- **Client-Side Processing**: All JSON operations happen in your browser
+- **No Data Storage**: Your data never leaves your machine
+- **Fast & Lightweight**: Optimized for performance
 
 ## Getting Started
 
@@ -45,12 +54,6 @@ src/
   App.tsx     # Main app entry
   main.tsx    # Vite/React entry
 ```
-
-## Extensibility
-
-- **Plugins:** Add new panes, controls, validators, or features by registering via the core plugin API.
-- **Themes:** Swap or extend themes using the theme API.
-- **Extension Points:** Documented APIs for easy integration.
 
 ## Deployment (Coolify + Nixpacks)
 
@@ -82,55 +85,16 @@ src/
 2. **Docker cache mount conflict** – Coolify mounts `/app/node_modules/.cache`. Removing the parent dir fails; instead we delete each child except `.cache` (current config already handles this).
 3. **Express 5 wildcard routes** – Express 5 rejects `app.get('*')`/`app.get('/*')`. Use `app.use(express.static(...))` plus a final `app.use((req,res)=>res.sendFile(...))` middleware (see [`server/index.js`](server/index.js)). This resolved the `path-to-regexp` errors and the “no available server” health check failures.
 
+## Extensibility
+
+The tool supports a modular plugin system:
+- **Plugins:** Add validators, panes, or controls via the plugin API
+- **Themes:** Create custom themes using the theme API
+- See `src/core/pluginApi.ts` and `src/core/themeApi.ts` for extension interfaces
+
 ## Contributing
 
-- Add new plugins in `src/plugins/`
-- Add or modify themes in `src/themes/`
-## Plugin System
-
-The JSON Tool supports a modular plugin system for extending functionality:
-
-- **Panes:** Add new side-by-side or bottom panes for custom views.
-- **Controls:** Add controls above the panes for new actions.
-- **Validators:** Add custom JSON validators (e.g., schema, linting).
-- **Themes:** Register new themes for the UI.
-
-### Plugin API Example
-
-```ts
-// src/plugins/schemaValidator.ts
-import type { Plugin } from "../core/pluginApi";
-
-const schemaValidatorPlugin: Plugin = {
-  id: "schema-validator",
-  name: "Schema Validator",
-  version: "1.0.0",
-  register(ctx) {
-    ctx.addValidator?.({
-      id: "basic-schema",
-      validate: (json) => ({
-        valid: typeof json === "object" && json !== null,
-        errors: typeof json === "object" && json !== null ? [] : ["Root must be an object"],
-      }),
-    });
-  },
-};
-export default schemaValidatorPlugin;
-```
-
-### Registering Plugins
-
-Add your plugin to `src/plugins/` and register it in the `PluginManager`.
-
-```ts
-// src/core/PluginManager.tsx
-import schemaValidatorPlugin from "../plugins/schemaValidator";
-// ...
-schemaValidatorPlugin.register(pluginContext);
-```
-
-See [`src/core/pluginApi.ts`](src/core/pluginApi.ts) for all extension points.
-- See `src/core/pluginApi.ts` and `src/core/themeApi.ts` for extension interfaces
+Contributions welcome! Add new plugins in `src/plugins/` or themes in `src/themes/`.
 
 ## License
 
