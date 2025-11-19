@@ -9,6 +9,10 @@ import {
     Menu,
     MenuItem,
     ListItemText,
+    Autocomplete,
+    Paper,
+    Box,
+    Typography,
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -22,7 +26,8 @@ import {
   faGear,
   faCheckCircle,
   faAlignJustify,
-  faCompressAlt
+  faCompressAlt,
+  faClock
 } from '@fortawesome/free-solid-svg-icons';
 import ModernTooltip from "./ModernTooltip";
 import type { ConversionFormat } from "../core/conversion";
@@ -43,6 +48,9 @@ interface ControlsBarProps {
     conversionOptions: { format: ConversionFormat; label: string }[];
 }
 
+const HISTORY_KEY = 'json-tool-url-history';
+const MAX_HISTORY = 10;
+
 const ControlsBar: React.FC<ControlsBarProps> = ({
     urlValue,
     onUrlChange,
@@ -59,6 +67,31 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
     conversionOptions,
 }) => {
     const [menuAnchor, setMenuAnchor] = React.useState<null | HTMLElement>(null);
+    const [history, setHistory] = React.useState<string[]>([]);
+
+    React.useEffect(() => {
+        try {
+            const stored = localStorage.getItem(HISTORY_KEY);
+            if (stored) {
+                setHistory(JSON.parse(stored));
+            }
+        } catch (e) {
+            console.error('Failed to load URL history', e);
+        }
+    }, []);
+
+    const saveToHistory = (url: string) => {
+        if (!url || !url.trim()) return;
+        
+        const newHistory = [url, ...history.filter(h => h !== url)].slice(0, MAX_HISTORY);
+        setHistory(newHistory);
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(newHistory));
+    };
+
+    const handleFetch = () => {
+        saveToHistory(urlValue);
+        onFetchUrl();
+    };
 
     const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
         setMenuAnchor(event.currentTarget);
@@ -88,18 +121,72 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
             role="toolbar"
             aria-label="JSON Tool Controls"
         >
-            <TextField
-                label="Enter URL to fetch JSON"
+            <Autocomplete
+                freeSolo
+                options={history}
                 value={urlValue}
-                onChange={e => onUrlChange(e.target.value)}
-                size="small"
+                onChange={(_, newValue) => {
+                    if (typeof newValue === 'string') {
+                        onUrlChange(newValue);
+                    }
+                }}
+                onInputChange={(_, newInputValue) => {
+                    onUrlChange(newInputValue);
+                }}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                        handleFetch();
+                    }
+                }}
+                openOnFocus
                 sx={{ flex: 1 }}
-                variant="outlined"
-                inputProps={{ "aria-label": "Enter JSON URL" }}
+                renderInput={(params) => (
+                    <TextField
+                        {...params}
+                        label="Enter URL to fetch JSON"
+                        size="small"
+                        variant="outlined"
+                        inputProps={{ 
+                            ...params.inputProps,
+                            "aria-label": "Enter JSON URL" 
+                        }}
+                    />
+                )}
+                renderOption={(props, option) => (
+                    <li {...props}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, py: 0.5, width: '100%' }}>
+                            <FontAwesomeIcon icon={faClock} style={{ color: '#90a4ae', fontSize: '0.85rem' }} />
+                            <Typography variant="body2" sx={{ color: 'text.secondary', fontFamily: 'Inter, sans-serif' }}>
+                                {option}
+                            </Typography>
+                        </Box>
+                    </li>
+                )}
+                PaperComponent={(props) => (
+                    <Paper 
+                        {...props} 
+                        elevation={4}
+                        sx={{ 
+                            mt: 1,
+                            backgroundColor: 'background.paper',
+                            borderRadius: 1,
+                            '& .MuiAutocomplete-listbox': {
+                                padding: 1,
+                                '& li': {
+                                    borderRadius: 1,
+                                    mb: 0.5,
+                                    '&:hover': {
+                                        backgroundColor: 'action.hover'
+                                    }
+                                }
+                            }
+                        }} 
+                    />
+                )}
             />
             <ModernTooltip title="Fetch JSON from URL" arrow placement="bottom">
                 <IconButton
-                    onClick={onFetchUrl}
+                    onClick={handleFetch}
                     disableRipple
                     sx={{
                         color: '#29b6f6',
