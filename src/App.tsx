@@ -5,7 +5,6 @@ import { themes } from "./themes";
 import Layout from "./components/Layout";
 import ControlsBar from "./components/ControlsBar";
 import HelpModal from "./components/HelpModal";
-import FileUpload from "./components/FileUpload";
 import FormatSettings, { type FormatOptions } from "./components/FormatSettings";
 import SchemaValidator from "./components/SchemaValidator";
 import schemaValidatorPlugin from "./plugins/schemaValidator";
@@ -26,6 +25,7 @@ function App() {
     quoteStyle: 'double',
     trailingComma: false,
   });
+  const [isDragging, setIsDragging] = useState(false);
   
 
   // Setup validation
@@ -293,46 +293,89 @@ function App() {
             </div>
           }
           leftPane={
-            <Box sx={{ position: 'relative', width: '100%', height: '100%' }}>
-              <Box sx={{ 
-                position: 'absolute', 
-                top: 0, 
-                left: 0, 
-                right: 0, 
-                bottom: 0,
-                pointerEvents: inputValue ? 'none' : 'auto',
-                opacity: inputValue ? 0 : 1,
-                transition: 'opacity 0.2s ease',
-                zIndex: inputValue ? -1 : 10
-              }}>
-                <FileUpload onFileLoad={handleFileLoad} isDark={isDark} />
-              </Box>
-              <Box sx={{ 
-                position: 'absolute', 
-                top: 0, 
-                left: 0, 
-                right: 0, 
-                bottom: 0,
-                opacity: inputValue ? 1 : 0.3,
-                transition: 'opacity 0.2s ease'
-              }}>
-                <Editor
-                  height="100%"
-                  defaultLanguage="json"
-                  value={inputValue}
-                  onChange={handleInputChange}
-                  theme={isDark ? "vs-dark" : "light"}
-                  options={{
-                    minimap: { enabled: false },
-                    fontSize: 14,
-                    fontFamily: "JetBrains Mono, monospace",
-                    wordWrap: "on",
-                    automaticLayout: true,
-                    scrollBeyondLastLine: false,
-                    renderLineHighlight: "none",
-                  }}
-                />
-              </Box>
+            <Box 
+              sx={{ position: 'relative', width: '100%', height: '100%' }}
+              onDragEnter={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsDragging(true);
+              }}
+              onDragOver={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+              onDragLeave={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                // Only hide if leaving the container, not child elements
+                if (e.currentTarget === e.target) {
+                  setIsDragging(false);
+                }
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsDragging(false);
+                
+                const files = Array.from(e.dataTransfer.files);
+                if (files.length > 0) {
+                  const file = files[0];
+                  if (file.type === 'application/json' || file.name.endsWith('.json')) {
+                    const reader = new FileReader();
+                    reader.onload = (evt) => {
+                      const content = evt.target?.result as string;
+                      handleFileLoad(content, file.name);
+                    };
+                    reader.readAsText(file);
+                  } else {
+                    setMessages(
+                      <span style={{ color: "#ef5350", fontFamily: "Inter, sans-serif" }}>
+                        Please drop a JSON file (.json)
+                      </span>
+                    );
+                  }
+                }
+              }}
+            >
+              {/* Drag overlay - only visible when dragging */}
+              {isDragging && (
+                <Box sx={{ 
+                  position: 'absolute', 
+                  top: 0, 
+                  left: 0, 
+                  right: 0, 
+                  bottom: 0,
+                  zIndex: 1000,
+                  backgroundColor: isDark ? 'rgba(33, 150, 243, 0.1)' : 'rgba(33, 150, 243, 0.05)',
+                  border: '3px dashed #2196f3',
+                  borderRadius: 2,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  pointerEvents: 'none'
+                }}>
+                  <Typography variant="h5" sx={{ color: '#2196f3', fontWeight: 600 }}>
+                    Drop JSON file here
+                  </Typography>
+                </Box>
+              )}
+              
+              <Editor
+                height="100%"
+                defaultLanguage="json"
+                value={inputValue}
+                onChange={handleInputChange}
+                theme={isDark ? "vs-dark" : "light"}
+                options={{
+                  minimap: { enabled: false },
+                  fontSize: 14,
+                  fontFamily: "JetBrains Mono, monospace",
+                  wordWrap: "on",
+                  automaticLayout: true,
+                  scrollBeyondLastLine: false,
+                  renderLineHighlight: "none",
+                }}
+              />
             </Box>
           }
           rightPane={
