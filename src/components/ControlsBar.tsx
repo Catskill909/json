@@ -1,15 +1,21 @@
 // ControlsBar: Top bar for input, URL fetch, copy, download, theme switch
 
 import React from "react";
-import { Stack, TextField, IconButton, Tooltip, Typography } from "@mui/material";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import DownloadIcon from "@mui/icons-material/Download";
-import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
-import Brightness4Icon from "@mui/icons-material/Brightness4";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import SettingsIcon from "@mui/icons-material/Settings";
-import VerifiedIcon from "@mui/icons-material/Verified";
+import { Stack, TextField, IconButton } from "@mui/material";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faCopy, 
+  faDownload, 
+  faCloudArrowDown, 
+  faMoon,
+  faTrashCan, 
+  faCircleQuestion,
+  faGear,
+  faCheckCircle,
+  faAlignJustify,
+  faCompressAlt
+} from '@fortawesome/free-solid-svg-icons';
+import ModernTooltip from "./ModernTooltip";
 
 interface ControlsBarProps {
     urlValue: string;
@@ -61,84 +67,166 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
             variant="outlined"
             inputProps={{ "aria-label": "Enter JSON URL" }}
         />
-        <Tooltip title="Fetch JSON from URL">
-            <span>
-                <IconButton
-                    onClick={onFetchUrl}
-                    color="primary"
-                    aria-label="Fetch JSON from URL"
-                    tabIndex={0}
-                >
-                    <CloudDownloadIcon />
-                </IconButton>
-            </span>
-        </Tooltip>
-        <Tooltip title="Format (Pretty)">
-            <IconButton onClick={() => onFormat('pretty')} color="primary">
-                <Typography variant="button" sx={{ fontWeight: 'bold', fontSize: '0.8rem' }}>{`{ }`}</Typography>
+        <ModernTooltip title="Fetch JSON from URL" arrow placement="bottom">
+            <IconButton
+                onClick={onFetchUrl}
+                sx={{
+                    color: '#29b6f6',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                        color: '#4fc3f7',
+                        transform: 'translateY(-2px)',
+                        backgroundColor: 'rgba(41, 182, 246, 0.1)'
+                    }
+                }}
+            >
+                <FontAwesomeIcon icon={faCloudArrowDown} size="lg" />
             </IconButton>
-        </Tooltip>
-        <Tooltip title="Minify">
-            <IconButton onClick={() => onFormat('minified')} color="primary">
-                <Typography variant="button" sx={{ fontWeight: 'bold', fontSize: '0.8rem' }}>{`><`}</Typography>
+        </ModernTooltip>
+        <ModernTooltip title="Format (Pretty)" arrow placement="bottom">
+            <IconButton
+                onClick={() => onFormat('pretty')}
+                sx={{
+                    color: '#66bb6a',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                        color: '#81c784',
+                        transform: 'translateY(-2px)',
+                        backgroundColor: 'rgba(102, 187, 106, 0.1)'
+                    }
+                }}
+            >
+                <FontAwesomeIcon icon={faAlignJustify} size="lg" />
             </IconButton>
-        </Tooltip>
-        <Tooltip title="Copy formatted JSON">
-            <span>
-                <IconButton
-                    onClick={onCopy}
-                    color="primary"
-                    aria-label="Copy formatted JSON"
-                    tabIndex={0}
-                >
-                    <ContentCopyIcon />
-                </IconButton>
-            </span>
-        </Tooltip>
-        <Tooltip title="Download formatted JSON">
-            <span>
-                <IconButton
-                    onClick={onDownload}
-                    color="primary"
-                    aria-label="Download formatted JSON"
-                    tabIndex={0}
-                >
-                    <DownloadIcon />
-                </IconButton>
-            </span>
-        </Tooltip>
-        <Tooltip title="Clear All">
-            <IconButton onClick={onClear} color="error">
-                <DeleteOutlineIcon />
+        </ModernTooltip>
+        <ModernTooltip title="Minify" arrow placement="bottom">
+            <IconButton
+                onClick={() => onFormat('minified')}
+                sx={{
+                    color: '#ffa726',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                        color: '#ffb74d',
+                        transform: 'translateY(-2px)',
+                        backgroundColor: 'rgba(255, 167, 38, 0.1)'
+                    }
+                }}
+            >
+                <FontAwesomeIcon icon={faCompressAlt} size="lg" />
             </IconButton>
-        </Tooltip>
-        <Tooltip title="Toggle dark/light theme">
-            <span>
-                <IconButton
-                    onClick={onThemeToggle}
-                    color="primary"
-                    aria-label="Toggle dark/light theme"
-                    tabIndex={0}
-                >
-                    <Brightness4Icon />
-                </IconButton>
-            </span>
-        </Tooltip>
-        <Tooltip title="Schema Validation">
-            <IconButton onClick={onSchema} color="success">
-                <VerifiedIcon />
+        </ModernTooltip>
+        <ModernTooltip title="Copy formatted JSON" arrow placement="bottom">
+            <IconButton
+                onClick={onCopy}
+                sx={{
+                    color: '#ab47bc',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                        color: '#ba68c8',
+                        transform: 'translateY(-2px)',
+                        backgroundColor: 'rgba(171, 71, 188, 0.1)'
+                    }
+                }}
+            >
+                <FontAwesomeIcon icon={faCopy} size="lg" />
             </IconButton>
-        </Tooltip>
-        <Tooltip title="Format Settings">
-            <IconButton onClick={onSettings} color="primary">
-                <SettingsIcon />
+        </ModernTooltip>
+        <ModernTooltip title="Download formatted JSON" arrow placement="bottom">
+            <IconButton
+                onClick={onDownload}
+                sx={{
+                    color: '#42a5f5',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                        color: '#64b5f6',
+                        transform: 'translateY(-2px)',
+                        backgroundColor: 'rgba(66, 165, 245, 0.1)'
+                    }
+                }}
+            >
+                <FontAwesomeIcon icon={faDownload} size="lg" />
             </IconButton>
-        </Tooltip>
-        <Tooltip title="Help & Instructions">
-            <IconButton onClick={onHelp} color="info">
-                <HelpOutlineIcon />
+        </ModernTooltip>
+        <ModernTooltip title="Clear All" arrow placement="bottom">
+            <IconButton
+                onClick={onClear}
+                sx={{
+                    color: '#ef5350',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                        color: '#e57373',
+                        transform: 'translateY(-2px)',
+                        backgroundColor: 'rgba(239, 83, 80, 0.1)'
+                    }
+                }}
+            >
+                <FontAwesomeIcon icon={faTrashCan} size="lg" />
             </IconButton>
-        </Tooltip>
+        </ModernTooltip>
+        <ModernTooltip title="Toggle dark/light theme" arrow placement="bottom">
+            <IconButton
+                onClick={onThemeToggle}
+                sx={{
+                    color: '#ffb300',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                        color: '#ffc107',
+                        transform: 'rotate(20deg) translateY(-2px)',
+                        backgroundColor: 'rgba(255, 179, 0, 0.1)'
+                    }
+                }}
+            >
+                <FontAwesomeIcon icon={faMoon} size="lg" />
+            </IconButton>
+        </ModernTooltip>
+        <ModernTooltip title="Schema Validation" arrow placement="bottom">
+            <IconButton
+                onClick={onSchema}
+                sx={{
+                    color: '#4caf50',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                        color: '#66bb6a',
+                        transform: 'scale(1.1) translateY(-2px)',
+                        backgroundColor: 'rgba(76, 175, 80, 0.1)'
+                    }
+                }}
+            >
+                <FontAwesomeIcon icon={faCheckCircle} size="lg" />
+            </IconButton>
+        </ModernTooltip>
+        <ModernTooltip title="Format Settings" arrow placement="bottom">
+            <IconButton
+                onClick={onSettings}
+                sx={{
+                    color: '#78909c',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                        color: '#90a4ae',
+                        transform: 'rotate(90deg) translateY(-2px)',
+                        backgroundColor: 'rgba(120, 144, 156, 0.1)'
+                    }
+                }}
+            >
+                <FontAwesomeIcon icon={faGear} size="lg" />
+            </IconButton>
+        </ModernTooltip>
+        <ModernTooltip title="Help & Instructions" arrow placement="bottom">
+            <IconButton
+                onClick={onHelp}
+                sx={{
+                    color: '#26c6da',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                        color: '#4dd0e1',
+                        transform: 'scale(1.1) translateY(-2px)',
+                        backgroundColor: 'rgba(38, 198, 218, 0.1)'
+                    }
+                }}
+            >
+                <FontAwesomeIcon icon={faCircleQuestion} size="lg" />
+            </IconButton>
+        </ModernTooltip>
     </Stack>
 );
 
