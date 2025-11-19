@@ -9,6 +9,7 @@ import Brightness4Icon from "@mui/icons-material/Brightness4";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import SettingsIcon from "@mui/icons-material/Settings";
+import VerifiedIcon from "@mui/icons-material/Verified";
 
 interface ControlsBarProps {
     urlValue: string;
@@ -21,6 +22,7 @@ interface ControlsBarProps {
     onThemeToggle: () => void;
     onHelp: () => void;
     onSettings: () => void;
+    onSchema: () => void;
 }
 
 const ControlsBar: React.FC<ControlsBarProps> = ({
@@ -34,6 +36,7 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
     onThemeToggle,
     onHelp,
     onSettings,
+    onSchema,
 }) => (
     <Stack
         direction={{ xs: "column", sm: "row" }}
@@ -120,6 +123,11 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
                     <Brightness4Icon />
                 </IconButton>
             </span>
+        </Tooltip>
+        <Tooltip title="Schema Validation">
+            <IconButton onClick={onSchema} color="success">
+                <VerifiedIcon />
+            </IconButton>
         </Tooltip>
         <Tooltip title="Format Settings">
             <IconButton onClick={onSettings} color="primary">

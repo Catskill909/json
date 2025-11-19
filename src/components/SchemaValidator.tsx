@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import {
   Box,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
   Typography,
   Button,
   Stack,
   Alert,
   Chip,
+  IconButton,
 } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import CloseIcon from '@mui/icons-material/Close';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import Editor from '@monaco-editor/react';
@@ -18,6 +20,8 @@ import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
 
 interface SchemaValidatorProps {
+  open: boolean;
+  onClose: () => void;
   jsonData: string;
   isDark?: boolean;
 }
@@ -28,13 +32,12 @@ interface ValidationError {
   keyword?: string;
 }
 
-const SchemaValidator: React.FC<SchemaValidatorProps> = ({ jsonData, isDark }) => {
+const SchemaValidator: React.FC<SchemaValidatorProps> = ({ open, onClose, jsonData, isDark }) => {
   const [schemaInput, setSchemaInput] = useState('');
   const [validationResult, setValidationResult] = useState<{
     valid: boolean;
     errors: ValidationError[];
   } | null>(null);
-  const [expanded, setExpanded] = useState(false);
 
   // Sample schemas for quick testing
   const sampleSchemas = {
@@ -126,39 +129,45 @@ const SchemaValidator: React.FC<SchemaValidatorProps> = ({ jsonData, isDark }) =
   }, [schemaInput, jsonData]);
 
   return (
-    <Accordion 
-      expanded={expanded} 
-      onChange={(_, isExpanded) => setExpanded(isExpanded)}
-      sx={{ 
-        backgroundColor: isDark ? '#1e1e1e' : '#f5f5f5',
-        '&:before': { display: 'none' }
+    <Dialog 
+      open={open}
+      onClose={onClose}
+      maxWidth="lg"
+      fullWidth
+      PaperProps={{
+        sx: {
+          backgroundColor: isDark ? '#1e1e1e' : '#fff',
+          color: isDark ? '#e0e0e0' : '#000',
+          minHeight: '70vh'
+        }
       }}
     >
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-        sx={{
-          backgroundColor: isDark ? '#252525' : '#e0e0e0',
-          '& .MuiAccordionSummary-content': {
-            alignItems: 'center',
-            gap: 2
-          }
-        }}
-      >
-        <Typography variant="h6" sx={{ fontWeight: 600 }}>
-          JSON Schema Validation
-        </Typography>
-        {validationResult && (
-          <Chip
-            icon={validationResult.valid ? <CheckCircleIcon /> : <ErrorIcon />}
-            label={validationResult.valid ? 'Valid' : `${validationResult.errors.length} Error(s)`}
-            color={validationResult.valid ? 'success' : 'error'}
-            size="small"
-          />
-        )}
-      </AccordionSummary>
+      <DialogTitle sx={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'space-between',
+        borderBottom: `1px solid ${isDark ? '#333' : '#e0e0e0'}`
+      }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Typography variant="h5" sx={{ fontWeight: 600, fontFamily: 'Oswald, sans-serif' }}>
+            JSON Schema Validation
+          </Typography>
+          {validationResult && (
+            <Chip
+              icon={validationResult.valid ? <CheckCircleIcon /> : <ErrorIcon />}
+              label={validationResult.valid ? 'Valid' : `${validationResult.errors.length} Error(s)`}
+              color={validationResult.valid ? 'success' : 'error'}
+              size="small"
+            />
+          )}
+        </Box>
+        <IconButton onClick={onClose} size="small">
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
       
-      <AccordionDetails>
-        <Stack spacing={2}>
+      <DialogContent sx={{ pt: 3 }}>
+        <Stack spacing={3}>
           {/* Sample Schema Buttons */}
           <Stack direction="row" spacing={1} flexWrap="wrap">
             <Button 
@@ -267,8 +276,14 @@ const SchemaValidator: React.FC<SchemaValidatorProps> = ({ jsonData, isDark }) =
             💡 Tip: Schema validation runs automatically as you type. Supports JSON Schema Draft 7, 2019-09, and 2020-12.
           </Typography>
         </Stack>
-      </AccordionDetails>
-    </Accordion>
+      </DialogContent>
+      
+      <DialogActions sx={{ p: 2, borderTop: `1px solid ${isDark ? '#333' : '#e0e0e0'}` }}>
+        <Button onClick={onClose} variant="contained">
+          Close
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 

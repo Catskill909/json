@@ -19,6 +19,7 @@ function App() {
   const [useProxy, setUseProxy] = useState(true);
   const [helpOpen, setHelpOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [schemaOpen, setSchemaOpen] = useState(false);
   const [formatOptions, setFormatOptions] = useState<FormatOptions>({
     indentSize: 2,
     indentType: 'spaces',
@@ -283,6 +284,7 @@ function App() {
               onDownload={handleDownload}
               onClear={handleClear}
               onThemeToggle={handleThemeToggle}
+              onSchema={() => setSchemaOpen(true)}
               onSettings={() => setSettingsOpen(true)}
               onHelp={() => setHelpOpen(true)}
             />
@@ -397,16 +399,14 @@ function App() {
             />
           }
         />
-        
-        {/* Schema Validator Section */}
-        <Box sx={{ 
-          borderTop: `1px solid ${isDark ? '#333' : '#e0e0e0'}`,
-          backgroundColor: isDark ? '#1e1e1e' : '#f5f5f5'
-        }}>
-          <SchemaValidator jsonData={inputValue} isDark={isDark} />
-        </Box>
 
         <HelpModal open={helpOpen} onClose={() => setHelpOpen(false)} />
+        <SchemaValidator 
+          open={schemaOpen}
+          onClose={() => setSchemaOpen(false)}
+          jsonData={inputValue}
+          isDark={isDark}
+        />
         <FormatSettings 
           open={settingsOpen} 
           onClose={() => setSettingsOpen(false)}
