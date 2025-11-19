@@ -1,19 +1,23 @@
-# JSON Tool Pro
+# SuperSoul JSON Tool
 
 A cutting-edge, professional JSON development environment with local proxy capabilities, modern design, and extensibility.
 
-![JSON Tool Pro](https://via.placeholder.com/800x400?text=JSON+Tool+Pro+Preview)
+![SuperSoul JSON Tool](https://via.placeholder.com/800x400?text=SuperSoul+JSON+Tool+Preview)
 
 ## Features
 
 - **Modern Interface**: Material Design with Dark/Light mode, using *Inter* and *JetBrains Mono* fonts. Headers styled with *Oswald*.
 - **Monaco Editor**: Professional-grade editor with syntax highlighting, folding, and minimap.
 - **CORS Proxy**: Built-in Node.js proxy server to bypass CORS restrictions and fetch JSON from any URL.
+- **Drag & Drop Upload**: Beautiful file upload interface - drag JSON files directly into the editor or click to browse.
+- **Enhanced Error Messages**: Detailed validation errors with line and column numbers for quick debugging.
+- **Customizable Formatting**: Configure indent size (2/4/8 spaces or tabs), quote style (single/double), and trailing commas.
 - **Utilities**:
-  - **Prettify**: Format compact JSON.
+  - **Prettify**: Format compact JSON with custom settings.
   - **Minify**: Compress JSON for production.
-  - **Validate**: Real-time error detection.
+  - **Validate**: Real-time error detection with precise error locations.
   - **Fetch**: Load JSON from external APIs easily.
+  - **Copy/Download**: One-click copy to clipboard or download as file.
 - **Extensible**: Plugin architecture for validators and themes.
 
 ## Getting Started

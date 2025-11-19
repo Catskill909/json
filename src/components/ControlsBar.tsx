@@ -8,6 +8,7 @@ import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import SettingsIcon from "@mui/icons-material/Settings";
 
 interface ControlsBarProps {
     urlValue: string;
@@ -19,6 +20,7 @@ interface ControlsBarProps {
     onClear: () => void;
     onThemeToggle: () => void;
     onHelp: () => void;
+    onSettings: () => void;
 }
 
 const ControlsBar: React.FC<ControlsBarProps> = ({
@@ -31,6 +33,7 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
     onClear,
     onThemeToggle,
     onHelp,
+    onSettings,
 }) => (
     <Stack
         direction={{ xs: "column", sm: "row" }}
@@ -117,6 +120,11 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
                     <Brightness4Icon />
                 </IconButton>
             </span>
+        </Tooltip>
+        <Tooltip title="Format Settings">
+            <IconButton onClick={onSettings} color="primary">
+                <SettingsIcon />
+            </IconButton>
         </Tooltip>
         <Tooltip title="Help & Instructions">
             <IconButton onClick={onHelp} color="info">

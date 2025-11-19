@@ -6,6 +6,7 @@ import Layout from "./components/Layout";
 import ControlsBar from "./components/ControlsBar";
 import HelpModal from "./components/HelpModal";
 import FileUpload from "./components/FileUpload";
+import FormatSettings, { type FormatOptions } from "./components/FormatSettings";
 import schemaValidatorPlugin from "./plugins/schemaValidator";
 
 function App() {
@@ -17,6 +18,13 @@ function App() {
   const [themeId, setThemeId] = useState(themes[0].id);
   const [useProxy, setUseProxy] = useState(true);
   const [helpOpen, setHelpOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [formatOptions, setFormatOptions] = useState<FormatOptions>({
+    indentSize: 2,
+    indentType: 'spaces',
+    quoteStyle: 'double',
+    trailingComma: false,
+  });
   
 
   // Setup validation
@@ -174,7 +182,20 @@ function App() {
     try {
       const parsed = JSON.parse(inputValue);
       if (mode === 'pretty') {
-        setFormatted(JSON.stringify(parsed, null, 2));
+        const indent = formatOptions.indentType === 'tabs' ? '\t' : ' '.repeat(formatOptions.indentSize);
+        let formatted = JSON.stringify(parsed, null, indent);
+        
+        // Apply quote style (single quotes)
+        if (formatOptions.quoteStyle === 'single') {
+          formatted = formatted.replace(/"([^"]+)":/g, "'$1':");
+        }
+        
+        // Add trailing commas if enabled
+        if (formatOptions.trailingComma) {
+          formatted = formatted.replace(/(\S)(\n\s*[}\]])/g, '$1,$2');
+        }
+        
+        setFormatted(formatted);
         setMessages(<span style={{ color: "#66bb6a", fontFamily: "Inter, sans-serif" }}>Formatted (Pretty)!</span>);
       } else {
         setFormatted(JSON.stringify(parsed));
@@ -235,7 +256,7 @@ function App() {
             gap: 16
         }}>
             <Typography variant="h6" style={{ fontWeight: 600, letterSpacing: -0.5, color: isDark ? "#fff" : "#333" }}>
-                JSON Tool Pro
+                SuperSoul JSON Tool
             </Typography>
             <div style={{ flex: 1 }}>
                  <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: isDark ? "#aaa" : "#666", cursor: "pointer" }}>
@@ -261,6 +282,7 @@ function App() {
               onDownload={handleDownload}
               onClear={handleClear}
               onThemeToggle={handleThemeToggle}
+              onSettings={() => setSettingsOpen(true)}
               onHelp={() => setHelpOpen(true)}
             />
           }
@@ -271,25 +293,45 @@ function App() {
           }
           leftPane={
             <Box sx={{ position: 'relative', width: '100%', height: '100%' }}>
-              {!inputValue && (
+              <Box sx={{ 
+                position: 'absolute', 
+                top: 0, 
+                left: 0, 
+                right: 0, 
+                bottom: 0,
+                pointerEvents: inputValue ? 'none' : 'auto',
+                opacity: inputValue ? 0 : 1,
+                transition: 'opacity 0.2s ease',
+                zIndex: inputValue ? -1 : 10
+              }}>
                 <FileUpload onFileLoad={handleFileLoad} isDark={isDark} />
-              )}
-              <Editor
-                height="100%"
-                defaultLanguage="json"
-                value={inputValue}
-                onChange={handleInputChange}
-                theme={isDark ? "vs-dark" : "light"}
-                options={{
-                  minimap: { enabled: false },
-                  fontSize: 14,
-                  fontFamily: "JetBrains Mono, monospace",
-                  wordWrap: "on",
-                  automaticLayout: true,
-                  scrollBeyondLastLine: false,
-                  renderLineHighlight: "none",
-                }}
-              />
+              </Box>
+              <Box sx={{ 
+                position: 'absolute', 
+                top: 0, 
+                left: 0, 
+                right: 0, 
+                bottom: 0,
+                opacity: inputValue ? 1 : 0.3,
+                transition: 'opacity 0.2s ease'
+              }}>
+                <Editor
+                  height="100%"
+                  defaultLanguage="json"
+                  value={inputValue}
+                  onChange={handleInputChange}
+                  theme={isDark ? "vs-dark" : "light"}
+                  options={{
+                    minimap: { enabled: false },
+                    fontSize: 14,
+                    fontFamily: "JetBrains Mono, monospace",
+                    wordWrap: "on",
+                    automaticLayout: true,
+                    scrollBeyondLastLine: false,
+                    renderLineHighlight: "none",
+                  }}
+                />
+              </Box>
             </Box>
           }
           rightPane={
@@ -312,6 +354,12 @@ function App() {
           }
         />
         <HelpModal open={helpOpen} onClose={() => setHelpOpen(false)} />
+        <FormatSettings 
+          open={settingsOpen} 
+          onClose={() => setSettingsOpen(false)}
+          options={formatOptions}
+          onChange={setFormatOptions}
+        />
       </div>
     </ThemeProvider>
   );
