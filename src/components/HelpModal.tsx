@@ -5,6 +5,9 @@ import CodeIcon from "@mui/icons-material/Code";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import SecurityIcon from "@mui/icons-material/Security";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
+import SettingsIcon from "@mui/icons-material/Settings";
+import VerifiedIcon from "@mui/icons-material/Verified";
 
 interface HelpModalProps {
   open: boolean;
@@ -29,11 +32,11 @@ const HelpModal: React.FC<HelpModalProps> = ({ open, onClose }) => {
       }}
     >
       <DialogTitle sx={{ fontFamily: "Oswald, sans-serif", fontSize: "1.8rem", pb: 1 }}>
-        How to Use JSON Tool Pro
+        SuperSoul JSON Tool - User Guide
       </DialogTitle>
       <DialogContent>
         <Typography variant="body1" sx={{ mb: 3, color: "#bdbdbd" }}>
-          Welcome to the ultimate JSON development environment. Here's how to get the most out of it:
+          Welcome to the ultimate JSON development environment. Here's everything you can do:
         </Typography>
 
         <Box sx={{ display: 'grid', gap: 3, gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' } }}>
@@ -45,8 +48,17 @@ const HelpModal: React.FC<HelpModalProps> = ({ open, onClose }) => {
                     <ListItem>
                         <ListItemIcon><CodeIcon sx={{ color: "#66bb6a" }} /></ListItemIcon>
                         <ListItemText 
-                            primary="Editor & Validator" 
-                            secondary="Paste JSON on the left. It auto-validates and formats. Errors are highlighted in real-time." 
+                            primary="Monaco Editor" 
+                            secondary="Professional-grade editor with syntax highlighting, auto-validation, and detailed error messages showing exact line & column numbers." 
+                            primaryTypographyProps={{ fontWeight: 600 }}
+                            secondaryTypographyProps={{ color: "#9e9e9e" }}
+                        />
+                    </ListItem>
+                    <ListItem>
+                        <ListItemIcon><UploadFileIcon sx={{ color: "#ab47bc" }} /></ListItemIcon>
+                        <ListItemText 
+                            primary="Drag & Drop Upload" 
+                            secondary="Drag JSON files directly into the editor or click to browse. Beautiful overlay appears when editor is empty."
                             primaryTypographyProps={{ fontWeight: 600 }}
                             secondaryTypographyProps={{ color: "#9e9e9e" }}
                         />
@@ -54,8 +66,8 @@ const HelpModal: React.FC<HelpModalProps> = ({ open, onClose }) => {
                     <ListItem>
                         <ListItemIcon><CloudDownloadIcon sx={{ color: "#29b6f6" }} /></ListItemIcon>
                         <ListItemText 
-                            primary="Fetch URL" 
-                            secondary="Enter any URL to fetch JSON. Includes a built-in Proxy to bypass CORS restrictions automatically."
+                            primary="Fetch from URL" 
+                            secondary="Enter any URL to fetch JSON. Built-in CORS proxy bypasses restrictions automatically."
                             primaryTypographyProps={{ fontWeight: 600 }}
                             secondaryTypographyProps={{ color: "#9e9e9e" }}
                         />
@@ -63,8 +75,8 @@ const HelpModal: React.FC<HelpModalProps> = ({ open, onClose }) => {
                     <ListItem>
                         <ListItemIcon><DeleteOutlineIcon sx={{ color: "#ef5350" }} /></ListItemIcon>
                         <ListItemText 
-                            primary="Utilities" 
-                            secondary="Minify, Prettify, Copy, Download, and Clear your workspace with one click."
+                            primary="Format & Utilities" 
+                            secondary="Minify, Prettify, Copy, Download, and Clear. One-click operations for all common tasks."
                             primaryTypographyProps={{ fontWeight: 600 }}
                             secondaryTypographyProps={{ color: "#9e9e9e" }}
                         />
@@ -74,18 +86,32 @@ const HelpModal: React.FC<HelpModalProps> = ({ open, onClose }) => {
 
              <Box>
                  <Typography variant="h6" sx={{ fontFamily: "Oswald, sans-serif", color: "#ffa726", mb: 1 }}>
-                    Pro Tips
+                    Advanced Features
                 </Typography>
                 <List dense>
                     <ListItem>
+                        <ListItemIcon><VerifiedIcon sx={{ color: "#4caf50" }} /></ListItemIcon>
+                        <ListItemText 
+                            primary="JSON Schema Validation" 
+                            secondary="Validate JSON against schemas (Draft 7/2019-09/2020-12). Expand the accordion below the editor to use this powerful feature."
+                            primaryTypographyProps={{ fontWeight: 600 }}
+                            secondaryTypographyProps={{ color: "#9e9e9e" }}
+                        />
+                    </ListItem>
+                    <ListItem>
+                        <ListItemIcon><SettingsIcon sx={{ color: "#ff9800" }} /></ListItemIcon>
+                        <ListItemText 
+                            primary="Custom Formatting" 
+                            secondary="Click ⚙️ Settings to configure indent size (2/4/8 spaces or tabs), quote style (single/double), and trailing commas."
+                            primaryTypographyProps={{ fontWeight: 600 }}
+                            secondaryTypographyProps={{ color: "#9e9e9e" }}
+                        />
+                    </ListItem>
+                    <ListItem>
                         <ListItemIcon><SecurityIcon sx={{ color: "#ffa726" }} /></ListItemIcon>
                         <ListItemText 
-                            primary="CORS Proxy" 
-                            secondary={
-                                <span>
-                                    If a URL fails, ensure the local proxy is running via <code style={{ background: '#333', padding: '2px 4px', borderRadius: 4 }}>npm run dev</code>. It handles SSL & Headers for you.
-                                </span>
-                            }
+                            primary="Privacy First" 
+                            secondary="All processing happens in your browser. Your data never leaves your machine. CORS proxy runs locally."
                             primaryTypographyProps={{ fontWeight: 600 }}
                             secondaryTypographyProps={{ color: "#9e9e9e" }}
                         />
@@ -93,8 +119,8 @@ const HelpModal: React.FC<HelpModalProps> = ({ open, onClose }) => {
                      <ListItem>
                         <ListItemIcon><CheckCircleOutlineIcon sx={{ color: "#ab47bc" }} /></ListItemIcon>
                         <ListItemText 
-                            primary="Smart Layout" 
-                            secondary="Toggle between Dark and Light themes. The layout adapts to your screen size automatically."
+                            primary="Dark/Light Themes" 
+                            secondary="Toggle themes with the 🌙 button. Layout adapts to your screen size automatically."
                             primaryTypographyProps={{ fontWeight: 600 }}
                             secondaryTypographyProps={{ color: "#9e9e9e" }}
                         />
@@ -105,7 +131,7 @@ const HelpModal: React.FC<HelpModalProps> = ({ open, onClose }) => {
         
         <Divider sx={{ my: 2, borderColor: "#333" }} />
         <Typography variant="caption" sx={{ color: "#666", display: "block", textAlign: "center" }}>
-            JSON Tool Pro v1.0.0 &bull; Built for Developers
+            SuperSoul JSON Tool v2.0.0 &bull; Phase 2: Schema Validation Complete &bull; Built for Developers
         </Typography>
 
       </DialogContent>

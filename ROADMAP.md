@@ -58,19 +58,22 @@ These features are expected by developers and will improve usability and complet
 
 These "wow" features will make JSON Tool Pro stand out from competitors.
 
-### 🎯 Priority 1: JSON Schema Validation Support
-**Status:** Not implemented  
+### ✅ Priority 1: JSON Schema Validation Support
+**Status:** ✅ Implemented  
 **Description:**
 - Allow users to upload/paste a JSON Schema
 - Validate JSON document against schema (syntax + structure + types + required fields)
 - Show detailed validation errors with paths
 - Provide "select schema from sample" mode
 
-**Implementation Plan:**
-- Use `ajv` library for JSON Schema validation
-- Add schema input pane (collapsible)
-- Display validation results with clickable error paths
-- Support JSON Schema Draft 7 / 2019-09 / 2020-12
+**Implementation:**
+- ✅ Uses `ajv` library with `ajv-formats` for JSON Schema validation
+- ✅ Collapsible accordion pane below main editor
+- ✅ Displays validation results with detailed error paths and messages
+- ✅ Supports JSON Schema Draft 7 / 2019-09 / 2020-12
+- ✅ Auto-validates as you type (500ms debounce)
+- ✅ Sample schemas (Basic, API) for quick testing
+- ✅ Visual status indicators (success/error chips)
 
 **Value:** Big differentiator - many tools skip this. Critical for API development.
 
@@ -321,23 +324,25 @@ These "wow" features will make JSON Tool Pro stand out from competitors.
 
 ## Current Status Summary
 
-**Implemented:**
+**Phase 1 Complete:**
 - ✅ Monaco Editor with syntax highlighting
 - ✅ Dark/Light theme toggle
-- ✅ Minify/Prettify
+- ✅ Minify/Prettify with custom settings
 - ✅ Copy to clipboard
 - ✅ Download as file
 - ✅ URL fetch with CORS proxy
-- ✅ Basic validation
-- ✅ Help modal
+- ✅ Enhanced error messages (line/column numbers)
+- ✅ File upload (drag & drop)
+- ✅ Formatting options (indent, quotes, trailing commas)
+- ✅ Help modal (updated with all features)
 
-**In Progress:**
-- 🔄 Enhanced error messages
-- 🔄 File upload (drag & drop)
-- 🔄 Formatting options
+**Phase 2 Complete:**
+- ✅ JSON Schema validation (Draft 7/2019-09/2020-12)
+- ✅ Auto-validation with debounce
+- ✅ Sample schemas for quick testing
+- ✅ Detailed error reporting with paths
 
-**Next Up:**
-- 🎯 JSON Schema validation
+**Next Up (Phase 2 Remaining):**
 - 🎯 Format conversion (CSV, YAML, TS, Dart)
 - 🎯 Diff mode
 

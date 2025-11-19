@@ -7,6 +7,7 @@ import ControlsBar from "./components/ControlsBar";
 import HelpModal from "./components/HelpModal";
 import FileUpload from "./components/FileUpload";
 import FormatSettings, { type FormatOptions } from "./components/FormatSettings";
+import SchemaValidator from "./components/SchemaValidator";
 import schemaValidatorPlugin from "./plugins/schemaValidator";
 
 function App() {
@@ -353,6 +354,15 @@ function App() {
             />
           }
         />
+        
+        {/* Schema Validator Section */}
+        <Box sx={{ 
+          borderTop: `1px solid ${isDark ? '#333' : '#e0e0e0'}`,
+          backgroundColor: isDark ? '#1e1e1e' : '#f5f5f5'
+        }}>
+          <SchemaValidator jsonData={inputValue} isDark={isDark} />
+        </Box>
+
         <HelpModal open={helpOpen} onClose={() => setHelpOpen(false)} />
         <FormatSettings 
           open={settingsOpen} 

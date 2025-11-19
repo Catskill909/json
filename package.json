@@ -18,6 +18,8 @@
     "@monaco-editor/react": "^4.7.0",
     "@mui/icons-material": "^7.3.5",
     "@mui/material": "^7.3.5",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
     "axios": "^1.13.2",
     "concurrently": "^9.2.1",
     "cors": "^2.8.5",

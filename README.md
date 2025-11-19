@@ -12,6 +12,7 @@ A cutting-edge, professional JSON development environment with local proxy capab
 - **Drag & Drop Upload**: Beautiful file upload interface - drag JSON files directly into the editor or click to browse.
 - **Enhanced Error Messages**: Detailed validation errors with line and column numbers for quick debugging.
 - **Customizable Formatting**: Configure indent size (2/4/8 spaces or tabs), quote style (single/double), and trailing commas.
+- **JSON Schema Validation**: Validate JSON against schemas (Draft 7, 2019-09, 2020-12) with detailed error reporting. Load sample schemas or paste your own.
 - **Utilities**:
   - **Prettify**: Format compact JSON with custom settings.
   - **Minify**: Compress JSON for production.
