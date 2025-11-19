@@ -63,11 +63,14 @@ app.use('/proxy', async (req, res) => {
   }
 });
 
-// Serve static files from dist
-app.use(express.static(path.join(__dirname, '../dist')));
+// Serve static files from dist with SPA fallback
+app.use(express.static(path.join(__dirname, '../dist'), {
+  index: 'index.html',
+  fallthrough: true
+}));
 
-// SPA Fallback - catch all routes not handled above
-app.get('/*', (req, res) => {
+// SPA fallback for all other routes
+app.use((req, res) => {
   res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
