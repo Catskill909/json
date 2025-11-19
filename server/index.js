@@ -66,9 +66,8 @@ app.use('/proxy', async (req, res) => {
 // Serve static files from dist
 app.use(express.static(path.join(__dirname, '../dist')));
 
-// SPA Fallback
-app.get('*', (req, res) => {
-  if (req.path.startsWith('/proxy')) return; // Don't intercept proxy
+// SPA Fallback - catch all routes not handled above
+app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
