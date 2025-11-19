@@ -8,6 +8,7 @@ import HelpModal from "./components/HelpModal";
 import FormatSettings, { type FormatOptions } from "./components/FormatSettings";
 import SchemaValidator from "./components/SchemaValidator";
 import schemaValidatorPlugin from "./plugins/schemaValidator";
+import { detectFeedType, convertXmlToJson } from "./utils/feed";
 import { getProxyUrl, shouldUseProxy } from "./utils/env";
 
 function App() {
@@ -54,9 +55,8 @@ function App() {
     return result;
   };
 
-  // Handle Input Change (Left Pane)
-  const handleInputChange = (v: string | undefined) => {
-    const val = v || "";
+  // Shared validation and formatting logic
+  const validateAndFormat = (val: string, extraMsg: React.ReactNode = null) => {
     setInputValue(val);
     
     try {
@@ -73,12 +73,13 @@ function App() {
          setMessages(
           <span style={{ color: "#ef5350", fontFamily: "Inter, sans-serif" }}>
             {validationResult.errors?.join(", ") || "Validation failed"}
+            {extraMsg}
           </span>
         );
       } else {
         setMessages(
             <span style={{ color: "#66bb6a", fontFamily: "Inter, sans-serif" }}>
-                Valid JSON
+                Valid JSON {extraMsg}
             </span>
         );
       }
@@ -108,10 +109,15 @@ function App() {
       
       setMessages(
         <span style={{ color: "#ef5350", fontFamily: "Inter, sans-serif" }}>
-          ⚠️ {errorMsg}
+          ⚠️ {errorMsg} {extraMsg}
         </span>
       );
     }
+  };
+
+  // Handle Input Change (Left Pane)
+  const handleInputChange = (v: string | undefined) => {
+    validateAndFormat(v || "");
   };
 
   // Handle URL Fetch
@@ -134,13 +140,36 @@ function App() {
       }
       
       const contentType = res.headers.get("content-type") || "";
-      if (!contentType.includes("application/json")) {
-         console.warn("Warning: Content-Type is not JSON:", contentType);
+      if (!contentType.includes("application/json") && !contentType.includes("xml") && !contentType.includes("rss")) {
+         console.warn("Warning: Content-Type might not be supported:", contentType);
       }
       const text = await res.text();
       
-      setInputValue(text);
-      handleInputChange(text); // Trigger validation and formatting
+      // Auto-detect feed type
+      const feedType = detectFeedType(text, contentType);
+      let contentToProcess = text;
+      let extraMsg: React.ReactNode = null;
+
+      if (feedType === 'xml') {
+        try {
+          contentToProcess = convertXmlToJson(text);
+          extraMsg = (
+            <span style={{ color: "#ffa726", marginLeft: 8 }}>
+              (Converted from XML/RSS)
+            </span>
+          );
+        } catch (e) {
+          console.error("XML Conversion failed", e);
+          // Fallback to original text, which will likely fail JSON parse
+          extraMsg = (
+             <span style={{ color: "#ef5350", marginLeft: 8 }}>
+              (XML Conversion failed)
+            </span>
+          );
+        }
+      }
+
+      validateAndFormat(contentToProcess, extraMsg);
       
     } catch (e: any) {
       let isCors = false;
