@@ -16,7 +16,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import Editor from '@monaco-editor/react';
-import Ajv from 'ajv';
+import Ajv2020 from 'ajv/dist/2020';
 import addFormats from 'ajv-formats';
 
 interface SchemaValidatorProps {
@@ -50,7 +50,7 @@ const SchemaValidator: React.FC<SchemaValidatorProps> = ({ open, onClose, jsonDa
       },
       required: ['name', 'email']
     }, null, 2),
-    
+
     api: JSON.stringify({
       type: 'object',
       properties: {
@@ -75,9 +75,9 @@ const SchemaValidator: React.FC<SchemaValidatorProps> = ({ open, onClose, jsonDa
       const schema = JSON.parse(schemaInput);
       const data = JSON.parse(jsonData);
 
-      const ajv = new Ajv({ allErrors: true, verbose: true });
+      const ajv = new Ajv2020({ allErrors: true, verbose: true });
       addFormats(ajv);
-      
+
       const validate = ajv.compile(schema);
       const valid = validate(data);
 
@@ -92,7 +92,7 @@ const SchemaValidator: React.FC<SchemaValidatorProps> = ({ open, onClose, jsonDa
           message: err.message || 'Validation error',
           keyword: err.keyword
         }));
-        
+
         setValidationResult({
           valid: false,
           errors
@@ -101,9 +101,9 @@ const SchemaValidator: React.FC<SchemaValidatorProps> = ({ open, onClose, jsonDa
     } catch (e: any) {
       setValidationResult({
         valid: false,
-        errors: [{ 
-          path: '', 
-          message: `Error: ${e.message}` 
+        errors: [{
+          path: '',
+          message: `Error: ${e.message}`
         }]
       });
     }
@@ -129,7 +129,7 @@ const SchemaValidator: React.FC<SchemaValidatorProps> = ({ open, onClose, jsonDa
   }, [schemaInput, jsonData]);
 
   return (
-    <Dialog 
+    <Dialog
       open={open}
       onClose={onClose}
       maxWidth="lg"
@@ -142,9 +142,9 @@ const SchemaValidator: React.FC<SchemaValidatorProps> = ({ open, onClose, jsonDa
         }
       }}
     >
-      <DialogTitle sx={{ 
-        display: 'flex', 
-        alignItems: 'center', 
+      <DialogTitle sx={{
+        display: 'flex',
+        alignItems: 'center',
         justifyContent: 'space-between',
         borderBottom: `1px solid ${isDark ? '#333' : '#e0e0e0'}`
       }}>
@@ -165,28 +165,28 @@ const SchemaValidator: React.FC<SchemaValidatorProps> = ({ open, onClose, jsonDa
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      
+
       <DialogContent sx={{ pt: 3 }}>
         <Stack spacing={3}>
           {/* Sample Schema Buttons */}
           <Stack direction="row" spacing={1} flexWrap="wrap">
-            <Button 
-              size="small" 
-              variant="outlined" 
+            <Button
+              size="small"
+              variant="outlined"
               onClick={() => loadSampleSchema('basic')}
             >
               Load Basic Schema
             </Button>
-            <Button 
-              size="small" 
-              variant="outlined" 
+            <Button
+              size="small"
+              variant="outlined"
               onClick={() => loadSampleSchema('api')}
             >
               Load API Schema
             </Button>
-            <Button 
-              size="small" 
-              variant="outlined" 
+            <Button
+              size="small"
+              variant="outlined"
               color="error"
               onClick={clearSchema}
             >
@@ -199,8 +199,8 @@ const SchemaValidator: React.FC<SchemaValidatorProps> = ({ open, onClose, jsonDa
             <Typography variant="body2" sx={{ mb: 1, fontWeight: 600 }}>
               JSON Schema (Draft 7 / 2019-09 / 2020-12):
             </Typography>
-            <Box sx={{ 
-              border: `1px solid ${isDark ? '#444' : '#ccc'}`, 
+            <Box sx={{
+              border: `1px solid ${isDark ? '#444' : '#ccc'}`,
               borderRadius: 1,
               overflow: 'hidden'
             }}>
@@ -223,8 +223,8 @@ const SchemaValidator: React.FC<SchemaValidatorProps> = ({ open, onClose, jsonDa
           </Box>
 
           {/* Validation Button */}
-          <Button 
-            variant="contained" 
+          <Button
+            variant="contained"
             onClick={validateAgainstSchema}
             disabled={!schemaInput || !jsonData}
           >
@@ -247,10 +247,10 @@ const SchemaValidator: React.FC<SchemaValidatorProps> = ({ open, onClose, jsonDa
                   </Typography>
                   <Stack spacing={1}>
                     {validationResult.errors.map((err, idx) => (
-                      <Box 
+                      <Box
                         key={idx}
-                        sx={{ 
-                          pl: 2, 
+                        sx={{
+                          pl: 2,
                           borderLeft: '3px solid #f44336',
                           fontFamily: 'JetBrains Mono, monospace',
                           fontSize: '0.85rem'
@@ -277,7 +277,7 @@ const SchemaValidator: React.FC<SchemaValidatorProps> = ({ open, onClose, jsonDa
           </Typography>
         </Stack>
       </DialogContent>
-      
+
       <DialogActions sx={{ p: 2, borderTop: `1px solid ${isDark ? '#333' : '#e0e0e0'}` }}>
         <Button onClick={onClose} variant="contained">
           Close
