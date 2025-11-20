@@ -43,6 +43,7 @@ function App() {
     trailingComma: false,
   });
   const [isDragging, setIsDragging] = useState(false);
+  const [selectedFormat, setSelectedFormat] = useState<ConversionFormat>("json_pretty");
   
 
   // Setup validation
@@ -273,9 +274,11 @@ function App() {
         
         setFormatted(formatted);
         setMessages(<span style={{ color: "#66bb6a", fontFamily: "Inter, sans-serif" }}>Formatted (Pretty)!</span>);
+        setSelectedFormat("json_pretty");
       } else {
         setFormatted(JSON.stringify(parsed));
         setMessages(<span style={{ color: "#66bb6a", fontFamily: "Inter, sans-serif" }}>Minified!</span>);
+        setSelectedFormat("json_minified");
       }
     } catch (e) {
       setMessages(<span style={{ color: "#ef5350", fontFamily: "Inter, sans-serif" }}>Invalid JSON, cannot format</span>);
@@ -326,6 +329,7 @@ function App() {
       const result = convertValue(parsed, format);
       setConversionResult(result);
       setConversionError(null);
+      setSelectedFormat(format);
     } catch (error: any) {
       setConversionError(error.message || "Conversion failed");
       setConversionResult(null);
@@ -403,6 +407,7 @@ function App() {
               onHelp={() => setHelpOpen(true)}
               onConvert={handleConvert}
               conversionOptions={conversionOptions}
+              selectedFormat={selectedFormat}
             />
           }
           messages={

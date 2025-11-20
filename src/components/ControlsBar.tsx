@@ -16,18 +16,19 @@ import {
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faCopy, 
-  faDownload, 
-  faCloudArrowDown, 
-  faMoon,
-  faTrashCan, 
-  faCircleQuestion,
-  faGear,
-  faCheckCircle,
-  faAlignJustify,
-  faCompressAlt,
-  faClock
+import {
+    faCopy,
+    faDownload,
+    faCloudArrowDown,
+    faMoon,
+    faTrashCan,
+    faCircleQuestion,
+    faGear,
+    faCheckCircle,
+    faAlignJustify,
+    faCompressAlt,
+    faClock,
+    faArrowRight
 } from '@fortawesome/free-solid-svg-icons';
 import ModernTooltip from "./ModernTooltip";
 import type { ConversionFormat } from "../core/conversion";
@@ -46,6 +47,7 @@ interface ControlsBarProps {
     onSchema: () => void;
     onConvert: (format: ConversionFormat) => void;
     conversionOptions: { format: ConversionFormat; label: string }[];
+    selectedFormat: ConversionFormat;
 }
 
 const HISTORY_KEY = 'json-tool-url-history';
@@ -65,6 +67,7 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
     onSchema,
     onConvert,
     conversionOptions,
+    selectedFormat,
 }) => {
     const [menuAnchor, setMenuAnchor] = React.useState<null | HTMLElement>(null);
     const [history, setHistory] = React.useState<string[]>([]);
@@ -82,7 +85,7 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
 
     const saveToHistory = (url: string) => {
         if (!url || !url.trim()) return;
-        
+
         const newHistory = [url, ...history.filter(h => h !== url)].slice(0, MAX_HISTORY);
         setHistory(newHistory);
         localStorage.setItem(HISTORY_KEY, JSON.stringify(newHistory));
@@ -146,9 +149,9 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
                         label="Enter URL to fetch JSON"
                         size="small"
                         variant="outlined"
-                        inputProps={{ 
+                        inputProps={{
                             ...params.inputProps,
-                            "aria-label": "Enter JSON URL" 
+                            "aria-label": "Enter JSON URL"
                         }}
                     />
                 )}
@@ -163,10 +166,10 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
                     </li>
                 )}
                 PaperComponent={(props) => (
-                    <Paper 
-                        {...props} 
+                    <Paper
+                        {...props}
                         elevation={4}
-                        sx={{ 
+                        sx={{
                             mt: 1,
                             backgroundColor: 'background.paper',
                             borderRadius: 1,
@@ -180,7 +183,7 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
                                     }
                                 }
                             }
-                        }} 
+                        }}
                     />
                 )}
             />
@@ -243,6 +246,9 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
                             primary={option.label}
                             primaryTypographyProps={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}
                         />
+                        {selectedFormat === option.format && (
+                            <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: 8, fontSize: 12, color: '#66bb6a' }} />
+                        )}
                     </MenuItem>
                 ))}
             </Menu>
