@@ -66,3 +66,18 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* Monaco Editor Folding Icons Customization */
+/* Target the folding icons in the gutter */
+.monaco-editor .cldr.codicon-folding-expanded,
+.monaco-editor .cldr.codicon-folding-collapsed {
+  opacity: 0.4 !important;
+  transition: opacity 0.2s ease, transform 0.2s ease !important;
+}
+
+/* When hovering over the gutter (margin view), show full opacity and scale */
+.monaco-editor .margin-view-overlays:hover .cldr.codicon-folding-expanded,
+.monaco-editor .margin-view-overlays:hover .cldr.codicon-folding-collapsed {
+  opacity: 1 !important;
+  transform: scale(1.2) !important;
+}
